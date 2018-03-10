@@ -1,5 +1,3 @@
-package com.lmntrx.android.smartpaywallet.view
-
 import android.app.Activity
 import android.content.res.ColorStateList
 import android.os.Build
@@ -9,10 +7,7 @@ import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 
 
 /***
@@ -69,8 +64,11 @@ class ProgressDialog(private val activity: Activity) {
                 dismiss()
         }
 
+        layout.visibility = View.GONE
+
     }
 
+    // Convert dp to px
     private fun dip(dp: Float): Int {
         val r = activity.resources
         return TypedValue.applyDimension(
@@ -80,6 +78,7 @@ class ProgressDialog(private val activity: Activity) {
         ).toInt()
     }
 
+    
     fun setMessage(message: String){
         textView.text = message
     }
@@ -99,12 +98,20 @@ class ProgressDialog(private val activity: Activity) {
                     WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         else
             activity.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        
+
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun setColor(color: Int) {
         progressBar.progressTintList = ColorStateList.valueOf(color)
+    }
+
+    fun onBackPressed(superOnBackPressed: () -> Unit) {
+        if (layout.visibility == View.VISIBLE){
+            if (cancelable)
+                dismiss()
+        }else
+            superOnBackPressed.invoke()
     }
 
 }
