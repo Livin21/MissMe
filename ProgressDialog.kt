@@ -1,16 +1,17 @@
+package com.lmntrx.android.smartpaywallet.view
+
 import android.app.Activity
 import android.content.res.ColorStateList
 import android.os.Build
 import android.support.annotation.RequiresApi
 import android.support.v7.widget.CardView
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
-import android.widget.ProgressBar
-import android.widget.RelativeLayout
 import android.util.TypedValue
 import android.view.Gravity
+import android.view.View
+import android.view.WindowManager
 import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.RelativeLayout
 import android.widget.TextView
 
 
@@ -19,12 +20,13 @@ import android.widget.TextView
  */
 
 
-class ProgressDialog(private val activity: Activity, rootLayout: ViewGroup? = null) {
+class ProgressDialog(private val activity: Activity) {
 
-    private val progressBar: ProgressBar = ProgressBar(activity, null, android.R.attr.progressBarStyleLarge)
-    private val cardView: CardView = CardView(activity)
-    private val innerLayout: LinearLayout = LinearLayout(activity)
-    private val textView: TextView = TextView(activity)
+    private val layout = RelativeLayout(activity)
+    private val textView = TextView(activity)
+    private val progressBar = ProgressBar(activity, null, android.R.attr.progressBarStyleLarge)
+    private val cardView = CardView(activity)
+    private val innerLayout = LinearLayout(activity)
 
     private var cancelable: Boolean = true
 
@@ -57,19 +59,12 @@ class ProgressDialog(private val activity: Activity, rootLayout: ViewGroup? = nu
         textView.gravity = Gravity.CENTER_VERTICAL
         innerLayout.addView(textView, textViewParams)
 
+        val layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
+        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT)
+        activity.addContentView(layout, layoutParams)
+        layout.addView(cardView, cardViewParams)
 
-        // Setting cardView in the view hierarchy
-        if (rootLayout != null)
-            rootLayout.addView(cardView, cardViewParams)
-        else {
-            val layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
-            layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT)
-            val layout = RelativeLayout(activity)
-            activity.addContentView(layout, layoutParams)
-            layout.addView(cardView, progressBarParams)
-        }
-
-        rootLayout?.setOnClickListener {
+        layout.setOnClickListener {
             if (cancelable)
                 dismiss()
         }
@@ -90,11 +85,11 @@ class ProgressDialog(private val activity: Activity, rootLayout: ViewGroup? = nu
     }
 
     fun show() {
-        cardView.visibility = View.VISIBLE
+        layout.visibility = View.VISIBLE
     }
 
     fun dismiss() {
-        cardView.visibility = View.GONE
+        layout.visibility = View.GONE
     }
 
     fun setCancelable(cancelable: Boolean) {
@@ -104,6 +99,7 @@ class ProgressDialog(private val activity: Activity, rootLayout: ViewGroup? = nu
                     WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         else
             activity.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
