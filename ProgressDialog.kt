@@ -31,7 +31,6 @@ import android.support.v7.widget.CardView
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
-import android.view.WindowManager
 import android.widget.*
 
 
@@ -41,7 +40,7 @@ import android.widget.*
 
 /**
  * @param activity instance of activity to which this ProgressDialog object belongs to
- * **/
+ **/
 class ProgressDialog(private val activity: Activity) {
 
     private val layout = RelativeLayout(activity)
@@ -100,14 +99,15 @@ class ProgressDialog(private val activity: Activity) {
          */
         cardView.setOnClickListener {}
 
-        layout.visibility = View.GONE
+
+        dismiss()
 
     }
 
     /**
      * @param dp size in dp
      * @return size in px
-     * **/
+     **/
     // Convert dp to px
     private fun dip(dp: Float): Int {
         val r = activity.resources
@@ -121,11 +121,9 @@ class ProgressDialog(private val activity: Activity) {
 
     /**
      * @param message A string object to display on the progress dialog
+     * Functions same as the setMessage() in deprecated ProgressDialog class
      **/
-    /*
-     * Set message on the progress bar. Functions same as the setMessage() in
-     * deprecated ProgressDialog class
-     */
+    /* Set message on the progress bar. */
     fun setMessage(message: String){
         textView.text = message
     }
@@ -146,13 +144,6 @@ class ProgressDialog(private val activity: Activity) {
     /* Toggles value of cancelable */
     fun setCancelable(cancelable: Boolean) {
         this.cancelable = cancelable
-        // Disable click on all other views
-        if (cancelable)
-            activity.window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        else
-            activity.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-
     }
 
     /**
@@ -166,9 +157,8 @@ class ProgressDialog(private val activity: Activity) {
 
     /**
      * @param superOnBackPressed = {super.onBackPressed()} A block of code to be executed.
-     **/
-    /* Called when back button is pressed. Should be called in
-     * the overridden onBackPressed() of the activity
+     * Called when back button is pressed. Should be called in the overridden onBackPressed()
+     * of the activity
      **/
     fun onBackPressed(superOnBackPressed: () -> Unit) {
         if (layout.visibility == View.VISIBLE){
@@ -177,5 +167,10 @@ class ProgressDialog(private val activity: Activity) {
         }else
             superOnBackPressed.invoke()
     }
+
+    /**
+     * @return value of cancelable
+     **/
+    fun isCancelable(): Boolean = cancelable
 
 }

@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         toggleCancelableButton.setOnClickListener {
 
             progressDialog.setCancelable(!progressDialog.isCancelable())
-            
+
             toggleCancelableButton.text = "Cancelable: ${progressDialog.isCancelable()}"
         }
 
