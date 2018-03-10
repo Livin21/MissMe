@@ -102,7 +102,8 @@ class ProgressDialog(private val activity: Activity) {
          */
         cardView.setOnClickListener {}
 
-        layout.visibility = View.GONE
+
+        dismiss()
 
     }
 
@@ -147,11 +148,11 @@ class ProgressDialog(private val activity: Activity) {
     fun setCancelable(cancelable: Boolean) {
         this.cancelable = cancelable
         // Disable click on all other views
-        if (cancelable)
+        /*if (cancelable)
             activity.window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                     WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         else
-            activity.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            activity.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)*/
 
     }
 
@@ -177,6 +178,9 @@ class ProgressDialog(private val activity: Activity) {
             superOnBackPressed.invoke()
     }
 
+    /**
+     * @return value of cancelable
+     **/
     fun isCancelable(): Boolean = cancelable
 
 }
