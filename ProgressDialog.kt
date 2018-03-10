@@ -14,7 +14,9 @@ import android.widget.*
  * Created by Livin Mathew <mail@livinmathew.me> on 10/3/18.
  */
 
-
+/**
+ * @param activity instance of activity to which this ProgressDialog object belongs to
+ * **/
 class ProgressDialog(private val activity: Activity) {
 
     private val layout = RelativeLayout(activity)
@@ -54,20 +56,33 @@ class ProgressDialog(private val activity: Activity) {
         textView.gravity = Gravity.CENTER_VERTICAL
         innerLayout.addView(textView, textViewParams)
 
+        // Layout
         val layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT)
         activity.addContentView(layout, layoutParams)
         layout.addView(cardView, cardViewParams)
 
+        /* If clicked anywhere on the screen except the progress dialog,  
+         * the progress dialog must dismiss depending upon the value of cancelable
+         */
         layout.setOnClickListener {
             if (cancelable)
                 dismiss()
         }
 
+        /* Left empty purposefully. To detach cardview and 
+         * its contents from layout's click listener
+         */
+        cardView.setOnClickListener {}
+
         layout.visibility = View.GONE
 
     }
 
+    /**
+     * @param dp size in dp
+     * @return size in px
+     * **/
     // Convert dp to px
     private fun dip(dp: Float): Int {
         val r = activity.resources
@@ -78,21 +93,35 @@ class ProgressDialog(private val activity: Activity) {
         ).toInt()
     }
 
-    
+
+    /**
+     * @param message A string object to display on the progress dialog
+     **/
+    /*
+     * Set message on the progress bar. Functions same as the setMessage() in
+     * deprecated ProgressDialog class
+     */
     fun setMessage(message: String){
         textView.text = message
     }
 
+    /* Display progress dialog */
     fun show() {
         layout.visibility = View.VISIBLE
     }
 
+    /* Hide progress dialog */
     fun dismiss() {
         layout.visibility = View.GONE
     }
 
+    /**
+     * @param cancelable A boolean which determines if the dialog can be dismissed by the user
+     **/
+    /* Toggles value of cancelable */
     fun setCancelable(cancelable: Boolean) {
         this.cancelable = cancelable
+        // Disable click on all other views
         if (cancelable)
             activity.window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
                     WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -101,11 +130,21 @@ class ProgressDialog(private val activity: Activity) {
 
     }
 
+    /**
+     * @param color ResourceId of progress bar's color
+     **/
+    /* Sets progress bar's color */
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun setColor(color: Int) {
         progressBar.progressTintList = ColorStateList.valueOf(color)
     }
 
+    /**
+     * @param superOnBackPressed = {super.onBackPressed()} A block of code to be executed.
+     **/
+    /* Called when back button is pressed. Should be called in
+     * the overridden onBackPressed() of the activity
+     **/
     fun onBackPressed(superOnBackPressed: () -> Unit) {
         if (layout.visibility == View.VISIBLE){
             if (cancelable)
