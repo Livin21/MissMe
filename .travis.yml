@@ -27,8 +27,8 @@ licenses:
     - 'android-sdk-license-.+'
     - 'google-gdk-license-.+'
 before_script: 
-    cd MissMe
-    $ANDROID_HOME/tools/bin/sdkmanager --update
+    - cd MissMe
+    - $ANDROID_HOME/tools/bin/sdkmanager --update
 
 script:
     # force init of adb way before any Gradle task that uses ADB; prevents a timeout error that skips emulators of android
