@@ -12,6 +12,7 @@
 
 # Package Files #
 *.jar
+!MissMe/gradle/wrapper/gradle-wrapper.jar
 *.war
 *.ear
 *.zip
