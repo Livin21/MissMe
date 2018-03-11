@@ -81,6 +81,7 @@ class ProgressDialog(private val activity: Activity) {
         textView.setPadding(dip(16f), dip(0f), dip(0f), dip(0f))
         textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22f)
         textView.gravity = Gravity.CENTER_VERTICAL
+        textView.maxLines = 3
         innerLayout.addView(textView, textViewParams)
 
         // Layout
