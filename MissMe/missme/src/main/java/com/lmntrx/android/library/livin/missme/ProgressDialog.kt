@@ -108,10 +108,6 @@ class ProgressDialog(private val activity: Activity) {
 
     }
 
-    /**
-     * @param dp size in dp
-     * @return size in px
-     **/
     /* Convert dp to px */
     private fun dip(dp: Float): Int {
         val r = activity.resources
@@ -132,11 +128,17 @@ class ProgressDialog(private val activity: Activity) {
         textView.text = message
     }
 
+    /**
+     * Displays progress dialog
+     **/
     /* Display progress dialog */
     fun show() {
         layout.visibility = View.VISIBLE
     }
 
+    /**
+     * Hides progress dialog
+     **/
     /* Hide progress dialog */
     fun dismiss() {
         layout.visibility = View.GONE

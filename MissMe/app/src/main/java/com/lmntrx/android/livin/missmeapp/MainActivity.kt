@@ -9,9 +9,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
-class MainActivity : AppCompatActivity() {
-
-    lateinit var progressDialog: ProgressDialog
+/**
+ * Sample app's MainActivity
+ **/
+class MainActivity(private var progressDialog: ProgressDialog) : AppCompatActivity() {
 
     private val colors = arrayListOf(
             Color.RED,
