@@ -3,37 +3,33 @@ android:
   #components:
     # Uncomment the lines below if you want to
     # use the latest revision of Android SDK Tools
-    # - platform-tools
-    #- tools
+    #- platform-tools
+    - tools
 
     # The BuildTools version used by your project
-    #- build-tools-27.0.3
+    - build-tools-27.0.3
 
     # The SDK version used to compile your project
-    #- android-27
+    - android-27
 
     # Additional components
-    #- extra-google-m2repository
-    #- extra-android-m2repository
+    - extra-google-m2repository
+    - extra-android-m2repository
 
     # Specify at least one system image,
     # if you need to run emulator(s) during your tests
-    #- sys-img-armeabi-v7a-android-27
+    - sys-img-armeabi-v7a-android-27
     #- sys-img-x86-android-18
-install:
-  - echo y | android update sdk -u -a -t tools
-  - echo y | android update sdk -u -a -t platform-tools
-  - echo y | android update sdk -u -a -t build-tools-27.0.3
-  - echo y | android update sdk -u -a -t android-27
-  - echo y | android update sdk -u -a -t extra-google-m2repository
-  - echo y | android update sdk -u -a -t extra-android-m2repository
 jdk:
   - oraclejdk8
 licenses:
     - 'android-sdk-preview-license-.+'
     - 'android-sdk-license-.+'
     - 'google-gdk-license-.+'
-before_script: cd MissMe
+before_script: 
+    cd MissMe
+    $ANDROID_HOME/tools/bin/sdkmanager --update
+
 script:
     # force init of adb way before any Gradle task that uses ADB; prevents a timeout error that skips emulators of android
     - adb devices
