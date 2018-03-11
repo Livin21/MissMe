@@ -1,18 +1,22 @@
 language: android
+notifications:
+  email:
+    recipients:
+      - livinmathew99@gmail.com
+    on_success: change
+    on_failure: always
+jdk:
+- oraclejdk8
 android:
   components:
   - tools
-  #- build-tools-27.0.3
+  - tools # Running this twice get's the latest build tools
+  - platform-tools
   - android-27
+  - build-tools-27.0.3
   - extra-google-m2repository
   - extra-android-m2repository
   - sys-img-armeabi-v7a-android-27
-jdk:
-- oraclejdk8
-licenses:
-- android-sdk-preview-license-.+
-- android-sdk-license-.+
-- google-gdk-license-.+
 before_script: cd MissMe
 script:
 - adb devices
