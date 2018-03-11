@@ -26,14 +26,14 @@
 package com.lmntrx.android.library.livin.missme
 
 import android.app.Activity
-import android.content.res.ColorStateList
-import android.os.Build
-import android.support.annotation.RequiresApi
 import android.support.v7.widget.CardView
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
-import android.widget.*
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.RelativeLayout
+import android.widget.TextView
 
 
 /***
@@ -152,9 +152,8 @@ class ProgressDialog(private val activity: Activity) {
      * @param color ResourceId of progress bar's color
      **/
     /* Sets progress bar's color */
-    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     fun setColor(color: Int) {
-        progressBar.progressTintList = ColorStateList.valueOf(color)
+        progressBar.indeterminateDrawable.setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN)
     }
 
     /**

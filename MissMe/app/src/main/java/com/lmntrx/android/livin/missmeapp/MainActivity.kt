@@ -1,8 +1,9 @@
 package com.lmntrx.android.livin.missmeapp
 
 import android.annotation.SuppressLint
-import android.support.v7.app.AppCompatActivity
+import android.graphics.Color
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import com.lmntrx.android.library.livin.missme.ProgressDialog
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.doAsync
@@ -11,6 +12,20 @@ import org.jetbrains.anko.uiThread
 class MainActivity : AppCompatActivity() {
 
     lateinit var progressDialog: ProgressDialog
+
+    private val colors = arrayListOf(
+            Color.RED,
+            Color.BLUE,
+            Color.GREEN,
+            Color.YELLOW,
+            Color.GRAY,
+            Color.CYAN,
+            Color.MAGENTA,
+            Color.DKGRAY,
+            Color.BLACK
+    )
+
+    private var currentColor = 0
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,10 +43,10 @@ class MainActivity : AppCompatActivity() {
             doAsync {
                 Thread(Runnable {
                     var i = 0
-                    while (++i <= 5){
+                    while (++i <= 5) {
                         uiThread {
 
-                            progressDialog.setMessage("Pretending to do some long task...${5-i}")
+                            progressDialog.setMessage("Pretending to do some long task...${5 - i}")
 
                         }
                         Thread.sleep(1000)
@@ -50,6 +65,13 @@ class MainActivity : AppCompatActivity() {
             progressDialog.setCancelable(!progressDialog.isCancelable())
 
             toggleCancelableButton.text = "Cancelable: ${progressDialog.isCancelable()}"
+        }
+
+
+        changeProgressColorButton.setOnClickListener {
+            if (currentColor == colors.size)
+                currentColor = 0
+            progressDialog.setColor(colors[currentColor++])
         }
 
     }
