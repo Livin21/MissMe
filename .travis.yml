@@ -13,7 +13,7 @@ android:
   - tools # Running this twice get's the latest build tools
   - platform-tools
   - android-27
-  - build-tools-27.0.3
+  - build-tools-27.0.2
   - extra-google-m2repository
   - extra-android-m2repository
   - sys-img-armeabi-v7a-android-27
