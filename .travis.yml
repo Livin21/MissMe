@@ -29,3 +29,5 @@ before_script:
   - cd MissMe
 script:
   - bash ./gradlew build check connectedCheck
+before_install:
+  - yes | sdkmanager "platforms;android-27"
