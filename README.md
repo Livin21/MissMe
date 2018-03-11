@@ -27,41 +27,41 @@ compile 'com.github.Livin21:MissMe:v0.1.3'
 Usage is similar to original ProgressDialog
 
 ```java
-	ProgressDialog progressDialog = new ProgressDialog(YourActivity.this);
+ProgressDialog progressDialog = new ProgressDialog(YourActivity.this);
 
-	// Set message
-	progressDialog.setMessage("Please wait");
+// Set message
+progressDialog.setMessage("Please wait");
 
-	// Set cancelable
-	progressDialog.setCancelable(false);
+// Set cancelable
+progressDialog.setCancelable(false);
 
-	// Show dialog
-	progressDialog.show();
+// Show dialog
+progressDialog.show();
 
-	// Hide
-	progressDialog.dismiss();
+// Hide
+progressDialog.dismiss();
 ```
 
 NB: You must override activity's onBackPressed()
 
 Java Implementation:
 ```java
-	@Override
-    public void onBackPressed() {
-        progressDialog.onBackPressed(
-                () -> {
-                    YourActivity.super.onBackPressed();
-                    return null;
-                }
-        );
-    }
+@Override
+public void onBackPressed() {
+    progressDialog.onBackPressed(
+            () -> {
+                YourActivity.super.onBackPressed();
+                return null;
+            }
+    );
+}
 ```
 
 Kotlin Implementation:
 ```kotlin
-	override fun onBackPressed() {
-        progressDialog.onBackPressed { super.onBackPressed() }
-	}
+override fun onBackPressed() {
+    progressDialog.onBackPressed { super.onBackPressed() }
+}
 ```
 
 ## Copyright ###
