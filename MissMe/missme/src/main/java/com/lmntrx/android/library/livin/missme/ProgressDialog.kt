@@ -26,6 +26,7 @@
 package com.lmntrx.android.library.livin.missme
 
 import android.app.Activity
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.CardView
 import android.util.TypedValue
 import android.view.Gravity
@@ -149,7 +150,7 @@ class ProgressDialog(private val activity: Activity) {
     }
 
     /**
-     * @param color ResourceId of progress bar's color
+     * @param color Constant from Color class, eg: Color.RED
      **/
     /* Sets progress bar's color */
     fun setColor(color: Int) {
@@ -173,5 +174,21 @@ class ProgressDialog(private val activity: Activity) {
      * @return value of cancelable
      **/
     fun isCancelable(): Boolean = cancelable
+
+    /**
+     * @param color ResourceId of text color
+     **/
+    /* Sets text color */
+    fun setTextColor(color: Int) {
+        textView.setTextColor(ContextCompat.getColor(activity, color))
+    }
+
+    /**
+     * @param sizeInSp text size in sp
+     **/
+    /* Sets text size */
+    fun setTextSize(sizeInSp: Float) {
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeInSp)
+    }
 
 }
