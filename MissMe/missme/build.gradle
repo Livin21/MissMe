@@ -12,7 +12,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 27
         versionCode 1
-        versionName "0.1.1"
+        versionName "0.1.2"
     }
 
     lintOptions {
@@ -32,7 +32,7 @@ publish {
     groupId = 'com.lmntrx.android.library.livin.missme'
     repoName = 'MissMe'
     artifactId = 'missme'
-    publishVersion = '0.1.1'
+    publishVersion = '0.1.2'
     desc = 'PregressDialog brought back to life'
     website = 'https://github.com/Livin21/MissMe'
 }
