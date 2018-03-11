@@ -110,7 +110,7 @@ class ProgressDialog(private val activity: Activity) {
      * @param dp size in dp
      * @return size in px
      **/
-    // Convert dp to px
+    /* Convert dp to px */
     private fun dip(dp: Float): Int {
         val r = activity.resources
         return TypedValue.applyDimension(
