@@ -1,27 +1,31 @@
 language: android
-notifications:
-  email:
-    recipients:
-      - livinmathew99@gmail.com
-    on_success: change
-    on_failure: always
 jdk:
-- oraclejdk8
+    - oraclejdk8
+sudo: false
+
 android:
-  components:
-  - tools
-  - tools # Running this twice get's the latest build tools
-  - platform-tools
-  - android-27
-  - build-tools-27.0.2
-  - extra-google-m2repository
-  - extra-android-m2repository
-  - sys-img-armeabi-v7a-android-27
-before_script: cd MissMe
+    components:
+        - platform-tools
+        - tools
+        - build-tools-27.0.0
+        - android-22
+        - android-27
+        - sys-img-armeabi-v7a-android-22
+        - extra-android-m2repository
+        - extra-google-m2repository
+
+licenses:
+    - 'android-sdk-preview-license-.+'
+    - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
+
+# Emulator Management: Create, Start and Wait
+
+before_script:
+  - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a -c 500M
+  - emulator -avd test -no-audio -no-window &
+  - android-wait-for-emulator
+  - adb shell input keyevent 82 &
+  - cd MissMe
 script:
-- adb devices
-- "./gradlew assembleDebug"
-before_install:
-  - mkdir "$ANDROID_HOME/licenses" || true
-  - echo -e "\8933bad161af4178b1185d1a37fbf41ea5269c55\d56f5187479451eabf01fb78af6dfcb131a6481e" > "$ANDROID_HOME/licenses/android-sdk-license"
-  - echo -e "\84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license"
+  - bash ./gradlew build check connectedCheck
