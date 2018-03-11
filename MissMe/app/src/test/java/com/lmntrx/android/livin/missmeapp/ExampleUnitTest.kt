@@ -1,4 +1,4 @@
-package com.lmntrx.android.livin.missme
+package com.lmntrx.android.livin.missmeapp
 
 import org.junit.Test
 

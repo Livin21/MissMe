@@ -1,8 +1,9 @@
-package com.lmntrx.android.livin.missme
+package com.lmntrx.android.livin.missmeapp
 
 import android.annotation.SuppressLint
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import com.lmntrx.android.library.livin.missme.ProgressDialog
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread

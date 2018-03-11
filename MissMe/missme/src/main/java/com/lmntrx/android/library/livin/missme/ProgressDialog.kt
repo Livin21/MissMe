@@ -23,7 +23,7 @@
  *
  */
 
-package com.lmntrx.android.livin.missme
+package com.lmntrx.android.library.livin.missme
 
 import android.app.Activity
 import android.content.res.ColorStateList
