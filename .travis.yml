@@ -27,6 +27,7 @@ licenses:
     - 'android-sdk-license-.+'
     - 'google-gdk-license-.+'
 script:
+    - build.sh
     # force init of adb way before any Gradle task that uses ADB; prevents a timeout error that skips emulators of android
     - adb devices
     # build app and assemble APK, in debug mode
