@@ -150,6 +150,9 @@ class ProgressDialog(private val activity: Activity) {
         mProgressPercent = view.findViewById<View>(R.id.progress_percent) as TextView
         mMessageView = view.findViewById<View>(R.id.message) as TextView
 
+        setMax(mMax)
+        setProgress(mProgressVal)
+
         mView = view
 
         setView(view)
@@ -199,9 +202,8 @@ class ProgressDialog(private val activity: Activity) {
         if (mHasStarted) {
             mProgress?.progress = value
             onProgressChanged()
-        } else {
-            mProgressVal = value
         }
+        mProgressVal = value
     }
 
     /**
@@ -261,9 +263,8 @@ class ProgressDialog(private val activity: Activity) {
         if (mProgress != null) {
             mProgress!!.max = max
             onProgressChanged()
-        } else {
-            mMax = max
         }
+        mMax = max
     }
 
     /**
