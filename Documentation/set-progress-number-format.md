@@ -1,4 +1,4 @@
-[missme](../../index.md) / [com.lmntrx.android.library.livin.missme](../index.md) / [ProgressDialog](index.md) / [setProgressNumberFormat](./set-progress-number-format.md)
+[ProgressDialog](index.md) / [setProgressNumberFormat](./set-progress-number-format.md)
 
 # setProgressNumberFormat
 

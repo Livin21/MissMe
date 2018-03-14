@@ -1,4 +1,4 @@
-[missme](../../index.md) / [com.lmntrx.android.library.livin.missme](../index.md) / [ProgressDialog](index.md) / [getMessageTextView](./get-message-text-view.md)
+[ProgressDialog](index.md) / [getMessageTextView](./get-message-text-view.md)
 
 # getMessageTextView
 

@@ -1,4 +1,4 @@
-[missme](../../index.md) / [com.lmntrx.android.library.livin.missme](../index.md) / [ProgressDialog](index.md) / [setTextSize](./set-text-size.md)
+[ProgressDialog](index.md) / [setTextSize](./set-text-size.md)
 
 # setTextSize
 

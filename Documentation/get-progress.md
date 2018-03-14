@@ -1,4 +1,4 @@
-[missme](../../index.md) / [com.lmntrx.android.library.livin.missme](../index.md) / [ProgressDialog](index.md) / [getProgress](./get-progress.md)
+[ProgressDialog](index.md) / [getProgress](./get-progress.md)
 
 # getProgress
 
