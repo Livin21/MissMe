@@ -1,4 +1,4 @@
-[ProgressDialog](index.md) / [setColor](./set-color.md)
+[missme](../../index.md) / [com.lmntrx.android.library.livin.missme](../index.md) / [ProgressDialog](index.md) / [setColor](./set-color.md)
 
 # setColor
 

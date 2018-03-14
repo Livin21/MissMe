@@ -1,4 +1,4 @@
-[ProgressDialog](index.md) / [setMax](./set-max.md)
+[missme](../../index.md) / [com.lmntrx.android.library.livin.missme](../index.md) / [ProgressDialog](index.md) / [setMax](./set-max.md)
 
 # setMax
 

@@ -1,4 +1,4 @@
-[ProgressDialog](index.md) / [setProgressPercentFormat](./set-progress-percent-format.md)
+[missme](../../index.md) / [com.lmntrx.android.library.livin.missme](../index.md) / [ProgressDialog](index.md) / [setProgressPercentFormat](./set-progress-percent-format.md)
 
 # setProgressPercentFormat
 
@@ -6,7 +6,7 @@
 
 Change the format of the small text showing the percentage of progress.
 The default is
-[NumberFormat.getPercentageInstnace().](http://docs.oracle.com/javase/6/docs/api/java/text/NumberFormat.html#getPercentInstance())
+[NumberFormat.getPercentageInstance().](http://docs.oracle.com/javase/6/docs/api/java/text/NumberFormat.html#getPercentInstance())
 Should not be called during the number is progressing.
 
 ### Parameters

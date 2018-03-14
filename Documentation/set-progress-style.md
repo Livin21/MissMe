@@ -1,4 +1,4 @@
-[ProgressDialog](index.md) / [setProgressStyle](./set-progress-style.md)
+[missme](../../index.md) / [com.lmntrx.android.library.livin.missme](../index.md) / [ProgressDialog](index.md) / [setProgressStyle](./set-progress-style.md)
 
 # setProgressStyle
 

@@ -402,7 +402,7 @@ class ProgressDialog(private val activity: Activity) {
     /**
      * Change the format of the small text showing the percentage of progress.
      * The default is
-     * [NumberFormat.getPercentageInstnace().][NumberFormat.getPercentInstance]
+     * [NumberFormat.getPercentageInstance().][NumberFormat.getPercentInstance]
      * Should not be called during the number is progressing.
      * @param format An instance of a [NumberFormat] to generate the
      * percentage text.  If null, nothing will be shown.
@@ -513,7 +513,7 @@ class ProgressDialog(private val activity: Activity) {
 
     /**
      * Set message TextView's text color manually.
-     * User can also customize {@link #getMessageTextView() messageTextView} directly.
+     * User can also customize [messageTextView][getMessageTextView] directly.
      * @param color ResourceId of text color
      */
     /* Sets text color */
@@ -523,7 +523,7 @@ class ProgressDialog(private val activity: Activity) {
 
     /**
      * Set message TextView's size manually.
-     * User can also customize {@link #getMessageTextView() messageTextView} directly.
+     * User can also customize [messageTextView][getMessageTextView] directly.
      * @param sizeInSp text size in sp
      */
     /* Sets text size */

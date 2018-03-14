@@ -1,4 +1,4 @@
-[ProgressDialog](index.md) / [isIndeterminate](./is-indeterminate.md)
+[missme](../../index.md) / [com.lmntrx.android.library.livin.missme](../index.md) / [ProgressDialog](index.md) / [isIndeterminate](./is-indeterminate.md)
 
 # isIndeterminate
 
