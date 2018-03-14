@@ -513,7 +513,7 @@ class ProgressDialog(private val activity: Activity) {
 
     /**
      * Set message TextView's text color manually.
-     * User can also customize {@link #getMessageTextView() messageTextView directly.}
+     * User can also customize {@link #getMessageTextView() messageTextView} directly.
      * @param color ResourceId of text color
      */
     /* Sets text color */
@@ -523,7 +523,7 @@ class ProgressDialog(private val activity: Activity) {
 
     /**
      * Set message TextView's size manually.
-     * User can also customize {@link #getMessageTextView() messageTextView directly.}
+     * User can also customize {@link #getMessageTextView() messageTextView} directly.
      * @param sizeInSp text size in sp
      */
     /* Sets text size */
