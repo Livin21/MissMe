@@ -41,6 +41,7 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.TextView
+import com.lmntrx.android.library.livin.missme.R.id.progress
 import java.text.NumberFormat
 
 
@@ -111,10 +112,12 @@ class ProgressDialog(private val activity: Activity) {
 
         setIndeterminate(mIndeterminate)
 
+        /* Initialize spinner layout as the default layout */
         spinnerLayout()
 
         onProgressChanged()
 
+        /* Hide progress dialog initially */
         dismiss()
 
     }
@@ -337,6 +340,11 @@ class ProgressDialog(private val activity: Activity) {
         } else {
             mIndeterminate = indeterminate
         }
+        if (indeterminate){
+            mProgressNumberFormat = null
+            mProgressPercentFormat = null
+        }else
+            initFormats()
     }
 
     /**

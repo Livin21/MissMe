@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
 
         progressDialog = ProgressDialog(this)
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
+        progressDialog.setIndeterminate(true)
         progressDialog.setMax(5)
         progressDialog.setProgress(0)
         progressDialog.setMessage("Pretending to do some long task...")
