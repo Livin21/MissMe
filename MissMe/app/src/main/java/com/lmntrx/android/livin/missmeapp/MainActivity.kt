@@ -12,7 +12,9 @@ import org.jetbrains.anko.uiThread
 /**
  * Sample app's MainActivity
  **/
-class MainActivity(private var progressDialog: ProgressDialog) : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var progressDialog: ProgressDialog
 
     private val colors = arrayListOf(
             Color.RED,
@@ -34,6 +36,7 @@ class MainActivity(private var progressDialog: ProgressDialog) : AppCompatActivi
         setContentView(R.layout.activity_main)
 
         progressDialog = ProgressDialog(this)
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
         progressDialog.setMessage("Pretending to do some long task...")
         progressDialog.setCancelable(true)
 
@@ -80,5 +83,7 @@ class MainActivity(private var progressDialog: ProgressDialog) : AppCompatActivi
     override fun onBackPressed() {
         progressDialog.onBackPressed { super.onBackPressed() }
     }
+
+
 
 }

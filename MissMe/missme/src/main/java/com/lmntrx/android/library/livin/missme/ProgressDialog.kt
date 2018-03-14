@@ -26,16 +26,20 @@
 package com.lmntrx.android.library.livin.missme
 
 import android.app.Activity
-import android.app.ProgressDialog.STYLE_SPINNER
+import android.graphics.Typeface
+import android.graphics.drawable.Drawable
+import android.os.Handler
 import android.support.v4.content.ContextCompat
-import android.support.v7.widget.CardView
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.StyleSpan
 import android.util.TypedValue
-import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.TextView
+import java.text.NumberFormat
 
 
 /***
@@ -60,21 +64,66 @@ class ProgressDialog(private val activity: Activity) {
         const val STYLE_HORIZONTAL = 1
     }
 
-    private val layout = RelativeLayout(activity)
-    private val textView = TextView(activity)
-    private val progressBar = ProgressBar(activity, null, android.R.attr.progressBarStyleLarge)
-    private val cardView = CardView(activity)
-    private val innerLayout = LinearLayout(activity)
 
-    private var progressStyle = STYLE_SPINNER
+    private var mProgress: ProgressBar? = null
+    private var mMessageView: TextView? = null
+
+    private var mProgressStyle = STYLE_SPINNER
+    private var mProgressNumber: TextView? = null
+    private var mProgressNumberFormat: String? = null
+    private var mProgressPercent: TextView? = null
+    private var mProgressPercentFormat: NumberFormat? = null
+
+
+    private var mMax: Int = 0
+    private var mProgressVal: Int = 0
+    private var mSecondaryProgressVal: Int = 0
+    private var mIncrementBy: Int = 0
+    private var mIncrementSecondaryBy: Int = 0
+    private var mProgressDrawable: Drawable? = null
+    private var mIndeterminateDrawable: Drawable? = null
+    private var mMessage: CharSequence? = null
+    private var mIndeterminate: Boolean = false
+
+    private var mHasStarted: Boolean = false
+    private var mViewUpdateHandler: Handler? = null
+
+    private val layout = RelativeLayout(activity)
+    private var mView: View? = null
 
     private var cancelable: Boolean = true
 
     init {
 
-        if (progressStyle == STYLE_SPINNER) {
-            spinnerLayout()
+        initFormats()
+
+        if (mMax > 0) {
+            setMax(mMax)
         }
+        if (mProgressVal > 0) {
+            setProgress(mProgressVal)
+        }
+        if (mSecondaryProgressVal > 0) {
+            setSecondaryProgress(mSecondaryProgressVal)
+        }
+        if (mIncrementBy > 0) {
+            incrementProgressBy(mIncrementBy)
+        }
+        if (mIncrementSecondaryBy > 0) {
+            incrementSecondaryProgressBy(mIncrementSecondaryBy)
+        }
+        if (mProgressDrawable != null) {
+            setProgressDrawable(mProgressDrawable!!)
+        }
+        if (mIndeterminateDrawable != null) {
+            setIndeterminateDrawable(mIndeterminateDrawable!!)
+        }
+        if (mMessage != null) {
+            setMessage(mMessage!!.toString())
+        }
+        setIndeterminate(mIndeterminate)
+
+        onProgressChanged()
 
         /* If clicked anywhere on the screen except the progress dialog,
          * the progress dialog must dismiss depending upon the value of cancelable
@@ -87,66 +136,270 @@ class ProgressDialog(private val activity: Activity) {
         /* Left empty purposefully. To detach cardview and
          * its contents from layout's click listener
          */
-        cardView.setOnClickListener {}
+        mView?.setOnClickListener {}
 
 
         dismiss()
 
     }
 
-    private fun spinnerLayout() {
-        // CardView
-        val cardViewParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 275)
-        cardViewParams.addRule(RelativeLayout.CENTER_VERTICAL)
-        cardView.cardElevation = 15f
-        cardView.radius = 20f
-        cardViewParams.setMargins(dip(16f), dip(0f), dip(16f), dip(0f))
-
-        // Inner Layout
-        val innerLayoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
-        innerLayout.setPadding(dip(8f), dip(8f), dip(8f), dip(8f))
-        innerLayout.orientation = LinearLayout.HORIZONTAL
-        cardView.addView(innerLayout, innerLayoutParams)
-
-        // ProgressBar
-        val progressBarParams = RelativeLayout.LayoutParams(125, RelativeLayout.LayoutParams.MATCH_PARENT)
-        progressBarParams.addRule(RelativeLayout.CENTER_VERTICAL)
-        progressBarParams.setMargins(dip(0f), dip(0f), dip(16f), dip(0f))
-        innerLayout.addView(progressBar, progressBarParams)
-
-        // TextView
-        val textViewParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.MATCH_PARENT)
-        textViewParams.addRule(RelativeLayout.CENTER_VERTICAL)
-        textView.setPadding(dip(16f), dip(0f), dip(0f), dip(0f))
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 22f)
-        textView.gravity = Gravity.CENTER_VERTICAL
-        textView.maxLines = 3
-        innerLayout.addView(textView, textViewParams)
-
-        // Layout
-        val layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
-        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT)
-        activity.addContentView(layout, layoutParams)
-        layout.addView(cardView, cardViewParams)
+    private fun initFormats() {
+        mProgressNumberFormat = "%1d/%2d"
+        mProgressPercentFormat = NumberFormat.getPercentInstance()
+        mProgressPercentFormat?.maximumFractionDigits = 0
     }
 
-    /* Convert dp to px */
-    private fun dip(dp: Float): Int {
-        val r = activity.resources
-        return TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                dp,
-                r.displayMetrics
-        ).toInt()
+    private fun spinnerLayout() {
+
+        val inflater = LayoutInflater.from(activity)
+        val view = inflater.inflate(R.layout.spinner_progress_dialog, layout)
+
+        mProgress = view.findViewById<View>(R.id.progress) as ProgressBar
+        mMessageView = view.findViewById<View>(R.id.message) as TextView
+
+        setView(view)
+
+    }
+
+    private fun horizontalLayout() {
+
+        val inflater = LayoutInflater.from(activity)
+        val view = inflater.inflate(R.layout.horizontal_progress_dialog, layout, false)
+
+        mProgress = view.findViewById<View>(R.id.progress) as ProgressBar
+        mProgressNumber = view.findViewById<View>(R.id.progress_number) as TextView
+        mProgressPercent = view.findViewById<View>(R.id.progress_percent) as TextView
+        mMessageView = view.findViewById<View>(R.id.message) as TextView
+
+        setView(view)
+
+    }
+
+    private fun setView(view: View) {
+        val layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
+        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT)
+        activity.addContentView(view, layoutParams)
+        mView = view
     }
 
     /**
-     * @param style can be STYLE_SPINNER or STYLE_HORIZONTAL
-     * Functions same as the setStyle() in deprecated ProgressDialog class
-     **/
-    /* Sets progressbar style */
+     * Sets the current progress.
+     *
+     * @param value the current progress, a value between 0 and [.getMax]
+     *
+     * @see ProgressBar.setProgress
+     */
+    fun setProgress(value: Int) {
+        if (mHasStarted) {
+            mProgress?.progress = value
+            onProgressChanged()
+        } else {
+            mProgressVal = value
+        }
+    }
+
+    /**
+     * Sets the secondary progress.
+     *
+     * @param secondaryProgress the current secondary progress, a value between 0 and
+     * [.getMax]
+     *
+     * @see ProgressBar.setSecondaryProgress
+     */
+    fun setSecondaryProgress(secondaryProgress: Int) {
+        if (mProgress != null) {
+            mProgress?.secondaryProgress = secondaryProgress
+            onProgressChanged()
+        } else {
+            mSecondaryProgressVal = secondaryProgress
+        }
+    }
+
+    /**
+     * Gets the current progress.
+     *
+     * @return the current progress, a value between 0 and [.getMax]
+     */
+    fun getProgress(): Int {
+        return if (mProgress != null) {
+            mProgress!!.progress
+        } else mProgressVal
+    }
+
+    /**
+     * Gets the current secondary progress.
+     *
+     * @return the current secondary progress, a value between 0 and [.getMax]
+     */
+    fun getSecondaryProgress(): Int {
+        return if (mProgress != null) {
+            mProgress!!.secondaryProgress
+        } else mSecondaryProgressVal
+    }
+
+    /**
+     * Gets the maximum allowed progress value. The default value is 100.
+     *
+     * @return the maximum value
+     */
+    fun getMax(): Int {
+        return if (mProgress != null) {
+            mProgress!!.max
+        } else mMax
+    }
+
+    /**
+     * Sets the maximum allowed progress value.
+     */
+    fun setMax(max: Int) {
+        if (mProgress != null) {
+            mProgress!!.max = max
+            onProgressChanged()
+        } else {
+            mMax = max
+        }
+    }
+
+    /**
+     * Increments the current progress value.
+     *
+     * @param diff the amount by which the current progress will be incremented,
+     * up to [.getMax]
+     */
+    fun incrementProgressBy(diff: Int) {
+        if (mProgress != null) {
+            mProgress!!.incrementProgressBy(diff)
+            onProgressChanged()
+        } else {
+            mIncrementBy += diff
+        }
+    }
+
+    /**
+     * Increments the current secondary progress value.
+     *
+     * @param diff the amount by which the current secondary progress will be incremented,
+     * up to [.getMax]
+     */
+    fun incrementSecondaryProgressBy(diff: Int) {
+        if (mProgress != null) {
+            mProgress!!.incrementSecondaryProgressBy(diff)
+            onProgressChanged()
+        } else {
+            mIncrementSecondaryBy += diff
+        }
+    }
+
+    /**
+     * Sets the drawable to be used to display the progress value.
+     *
+     * @param d the drawable to be used
+     *
+     * @see ProgressBar.setProgressDrawable
+     */
+    fun setProgressDrawable(d: Drawable) {
+        if (mProgress != null) {
+            mProgress!!.progressDrawable = d
+        } else {
+            mProgressDrawable = d
+        }
+    }
+
+    /**
+     * Sets the drawable to be used to display the indeterminate progress value.
+     *
+     * @param d the drawable to be used
+     *
+     * @see ProgressBar.setProgressDrawable
+     * @see .setIndeterminate
+     */
+    fun setIndeterminateDrawable(d: Drawable) {
+        if (mProgress != null) {
+            mProgress!!.indeterminateDrawable = d
+        } else {
+            mIndeterminateDrawable = d
+        }
+    }
+
+    /**
+     * Change the indeterminate mode for this ProgressDialog. In indeterminate
+     * mode, the progress is ignored and the dialog shows an infinite
+     * animation instead.
+     *
+     *
+     * **Note:** A ProgressDialog with style [.STYLE_SPINNER]
+     * is always indeterminate and will ignore this setting.
+     *
+     * @param indeterminate true to enable indeterminate mode, false otherwise
+     *
+     * @see .setProgressStyle
+     */
+    fun setIndeterminate(indeterminate: Boolean) {
+        if (mProgress != null) {
+            mProgress!!.isIndeterminate = indeterminate
+        } else {
+            mIndeterminate = indeterminate
+        }
+    }
+
+    /**
+     * Whether this ProgressDialog is in indeterminate mode.
+     *
+     * @return true if the dialog is in indeterminate mode, false otherwise
+     */
+    fun isIndeterminate(): Boolean {
+        return if (mProgress != null) {
+            mProgress!!.isIndeterminate
+        } else mIndeterminate
+    }
+
+    /**
+     * Sets the style of this ProgressDialog, either [.STYLE_SPINNER] or
+     * [.STYLE_HORIZONTAL]. The default is [.STYLE_SPINNER].
+     *
+     *
+     * **Note:** A ProgressDialog with style [.STYLE_SPINNER]
+     * is always indeterminate and will ignore the [ indeterminate][.setIndeterminate] setting.
+     *
+     * @param style the style of this ProgressDialog, either [.STYLE_SPINNER] or
+     * [.STYLE_HORIZONTAL]
+     */
     fun setProgressStyle(style: Int) {
-        progressStyle = style
+        mProgressStyle = style
+    }
+
+    /**
+     * Change the format of the small text showing current and maximum units
+     * of progress.  The default is "%1d/%2d".
+     * Should not be called during the number is progressing.
+     * @param format A string passed to [String.format()][String.format];
+     * use "%1d" for the current number and "%2d" for the maximum.  If null,
+     * nothing will be shown.
+     */
+    fun setProgressNumberFormat(format: String) {
+        mProgressNumberFormat = format
+        onProgressChanged()
+    }
+
+    /**
+     * Change the format of the small text showing the percentage of progress.
+     * The default is
+     * [NumberFormat.getPercentageInstnace().][NumberFormat.getPercentInstance]
+     * Should not be called during the number is progressing.
+     * @param format An instance of a [NumberFormat] to generate the
+     * percentage text.  If null, nothing will be shown.
+     */
+    fun setProgressPercentFormat(format: NumberFormat) {
+        mProgressPercentFormat = format
+        onProgressChanged()
+    }
+
+    private fun onProgressChanged() {
+        if (mProgressStyle == STYLE_HORIZONTAL) {
+            if (mViewUpdateHandler != null && !mViewUpdateHandler!!.hasMessages(0)) {
+                mViewUpdateHandler!!.sendEmptyMessage(0)
+            }
+        }
     }
 
     /**
@@ -155,7 +408,7 @@ class ProgressDialog(private val activity: Activity) {
      **/
     /* Set message on the progress bar. */
     fun setMessage(message: String) {
-        textView.text = message
+        mMessageView?.text = message
     }
 
     /**
@@ -163,7 +416,43 @@ class ProgressDialog(private val activity: Activity) {
      **/
     /* Display progress dialog */
     fun show() {
-        layout.visibility = View.VISIBLE
+
+        if (mProgressStyle == STYLE_HORIZONTAL) {
+            /* Use a separate handler to update the text views as they
+             * must be updated on the same thread that created them.
+             */
+            setIndeterminate(true)
+            mViewUpdateHandler = Handler{
+                /* Update the number and percent */
+                val progress = mProgress?.progress
+                val max = mProgress?.max
+                if (mProgressNumberFormat != null) {
+                    val format = mProgressNumberFormat
+                    mProgressNumber?.text = String.format(format!!, progress, max)
+                } else {
+                    mProgressNumber?.text = ""
+                }
+                if (mProgressPercentFormat != null) {
+                    val percent = progress!!.toDouble() / max!!.toDouble()
+                    val tmp = SpannableString(mProgressPercentFormat?.format(percent))
+                    tmp.setSpan(StyleSpan(Typeface.BOLD),
+                            0, tmp.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    mProgressPercent?.text = tmp
+                } else {
+                    mProgressPercent?.text = ""
+                }
+                true
+            }
+
+
+            horizontalLayout()
+
+
+        }else{
+            spinnerLayout()
+        }
+
+        //layout.visibility = View.VISIBLE
     }
 
     /**
@@ -171,7 +460,7 @@ class ProgressDialog(private val activity: Activity) {
      **/
     /* Hide progress dialog */
     fun dismiss() {
-        layout.visibility = View.GONE
+        mView?.visibility = View.GONE
     }
 
     /**
@@ -187,7 +476,7 @@ class ProgressDialog(private val activity: Activity) {
      **/
     /* Sets progress bar's color */
     fun setColor(color: Int) {
-        progressBar.indeterminateDrawable.setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN)
+        mProgress?.indeterminateDrawable?.setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN)
     }
 
     /**
@@ -196,7 +485,7 @@ class ProgressDialog(private val activity: Activity) {
      * of the activity
      **/
     fun onBackPressed(superOnBackPressed: () -> Unit) {
-        if (layout.visibility == View.VISIBLE) {
+        if (mView?.visibility == View.VISIBLE) {
             if (cancelable)
                 dismiss()
         } else
@@ -213,7 +502,7 @@ class ProgressDialog(private val activity: Activity) {
      **/
     /* Sets text color */
     fun setTextColor(color: Int) {
-        textView.setTextColor(ContextCompat.getColor(activity, color))
+        mMessageView?.setTextColor(ContextCompat.getColor(activity, color))
     }
 
     /**
@@ -221,7 +510,7 @@ class ProgressDialog(private val activity: Activity) {
      **/
     /* Sets text size */
     fun setTextSize(sizeInSp: Float) {
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeInSp)
+        mMessageView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeInSp)
     }
 
 }
