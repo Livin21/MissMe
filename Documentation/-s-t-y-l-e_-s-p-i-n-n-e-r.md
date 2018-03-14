@@ -1,4 +1,4 @@
-[missme](../../index.md) / [com.lmntrx.android.library.livin.missme](../index.md) / [ProgressDialog](index.md) / [STYLE_SPINNER](./-s-t-y-l-e_-s-p-i-n-n-e-r.md)
+[ProgressDialog](index.md) / [STYLE_SPINNER](./-s-t-y-l-e_-s-p-i-n-n-e-r.md)
 
 # STYLE_SPINNER
 

@@ -1,4 +1,4 @@
-[missme](../../index.md) / [com.lmntrx.android.library.livin.missme](../index.md) / [ProgressDialog](index.md) / [setProgressPercentFormat](./set-progress-percent-format.md)
+[ProgressDialog](index.md) / [setProgressPercentFormat](./set-progress-percent-format.md)
 
 # setProgressPercentFormat
 
