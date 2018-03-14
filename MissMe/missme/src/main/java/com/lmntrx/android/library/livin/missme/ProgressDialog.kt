@@ -26,6 +26,7 @@
 package com.lmntrx.android.library.livin.missme
 
 import android.app.Activity
+import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Handler
@@ -134,6 +135,8 @@ class ProgressDialog(private val activity: Activity) {
 
         mView = view
 
+        setView(view)
+
     }
 
     private fun horizontalLayout() {
@@ -147,6 +150,8 @@ class ProgressDialog(private val activity: Activity) {
         mMessageView = view.findViewById<View>(R.id.message) as TextView
 
         mView = view
+
+        setView(view)
 
     }
 
@@ -169,6 +174,8 @@ class ProgressDialog(private val activity: Activity) {
          * its contents from layout's click listener
          */
         mProgressDialogView?.setOnClickListener {}
+
+        mView.visibility = View.GONE
 
     }
 
@@ -410,12 +417,12 @@ class ProgressDialog(private val activity: Activity) {
      **/
     /* Display progress dialog */
     fun show() {
-
+        mHasStarted = true
         if (mProgressStyle == STYLE_HORIZONTAL) {
             /* Use a separate handler to update the text views as they
              * must be updated on the same thread that created them.
              */
-            mViewUpdateHandler = Handler{
+            mViewUpdateHandler = Handler {
                 /* Update the number and percent */
                 val progress = mProgress?.progress
                 val max = mProgress?.max
@@ -436,14 +443,10 @@ class ProgressDialog(private val activity: Activity) {
                 }
                 true
             }
-            setView(mView)
-        }else{
-            setView(mView)
+            mView.visibility = View.VISIBLE
+        } else {
+            mView.visibility = View.VISIBLE
         }
-
-        mHasStarted = true
-
-        //layout.visibility = View.VISIBLE
     }
 
     /**
@@ -452,6 +455,7 @@ class ProgressDialog(private val activity: Activity) {
     /* Hide progress dialog */
     fun dismiss() {
         mView.visibility = View.GONE
+        setProgress(0)
         mHasStarted = false
     }
 
@@ -468,7 +472,10 @@ class ProgressDialog(private val activity: Activity) {
      **/
     /* Sets progress bar's color */
     fun setColor(color: Int) {
-        mProgress?.indeterminateDrawable?.setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN)
+        if (mProgressStyle == STYLE_HORIZONTAL)
+            mProgress?.progressDrawable?.mutate()?.setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN)
+        else
+            mProgress?.indeterminateDrawable?.setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN)
     }
 
     /**
@@ -477,7 +484,7 @@ class ProgressDialog(private val activity: Activity) {
      * of the activity
      **/
     fun onBackPressed(superOnBackPressed: () -> Unit) {
-        if (mView?.visibility == View.VISIBLE) {
+        if (mView.visibility == View.VISIBLE) {
             if (cancelable)
                 dismiss()
         } else
