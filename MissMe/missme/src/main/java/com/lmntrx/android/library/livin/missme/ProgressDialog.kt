@@ -26,7 +26,6 @@
 package com.lmntrx.android.library.livin.missme
 
 import android.app.Activity
-import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Handler
@@ -37,21 +36,23 @@ import android.text.style.StyleSpan
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.TextView
-import com.lmntrx.android.library.livin.missme.R.id.progress
 import java.text.NumberFormat
-
 
 /***
  * Created by Livin Mathew <mail@livinmathew.me> on 10/3/18.
  */
 
 /**
- * @param activity instance of activity to which this ProgressDialog object belongs to
- **/
+ * A dialog showing a progress indicator and an optional text message or view.
+ * Only a text message or a view can be used at the same time.
+ *
+ * <p>The dialog can be made cancelable on back key press.</p>
+ *
+ * <p>The progress range is 0 to {@link #getMax() max}.</p>
+ */
 class ProgressDialog(private val activity: Activity) {
 
     companion object {
@@ -67,7 +68,6 @@ class ProgressDialog(private val activity: Activity) {
         const val STYLE_HORIZONTAL = 1
     }
 
-
     private var mProgress: ProgressBar? = null
     private var mMessageView: TextView? = null
 
@@ -76,7 +76,6 @@ class ProgressDialog(private val activity: Activity) {
     private var mProgressNumberFormat: String? = null
     private var mProgressPercent: TextView? = null
     private var mProgressPercentFormat: NumberFormat? = null
-
 
     private var mMax: Int = 0
     private var mProgressVal: Int = 0
@@ -91,7 +90,6 @@ class ProgressDialog(private val activity: Activity) {
     private var mHasStarted: Boolean = false
     private var mViewUpdateHandler: Handler? = null
 
-    private val layout = RelativeLayout(activity)
     private var mProgressDialogView: View? = null
     private lateinit var mView: View
 
@@ -180,6 +178,14 @@ class ProgressDialog(private val activity: Activity) {
 
         mView.visibility = View.GONE
 
+    }
+
+    private fun onProgressChanged() {
+        if (mProgressStyle == STYLE_HORIZONTAL) {
+            if (mViewUpdateHandler != null && !mViewUpdateHandler!!.hasMessages(0)) {
+                mViewUpdateHandler!!.sendEmptyMessage(0)
+            }
+        }
     }
 
     /**
@@ -340,6 +346,7 @@ class ProgressDialog(private val activity: Activity) {
         } else {
             mIndeterminate = indeterminate
         }
+        /* Hide progress display TextViews */
         if (indeterminate){
             mProgressNumberFormat = null
             mProgressPercentFormat = null
@@ -403,14 +410,6 @@ class ProgressDialog(private val activity: Activity) {
         onProgressChanged()
     }
 
-    private fun onProgressChanged() {
-        if (mProgressStyle == STYLE_HORIZONTAL) {
-            if (mViewUpdateHandler != null && !mViewUpdateHandler!!.hasMessages(0)) {
-                mViewUpdateHandler!!.sendEmptyMessage(0)
-            }
-        }
-    }
-
     /**
      * @param message A string object to display on the progress dialog
      * Functions same as the setMessage() in deprecated ProgressDialog class
@@ -422,7 +421,7 @@ class ProgressDialog(private val activity: Activity) {
 
     /**
      * Displays progress dialog
-     **/
+     */
     /* Display progress dialog */
     fun show() {
         mHasStarted = true
@@ -501,12 +500,12 @@ class ProgressDialog(private val activity: Activity) {
 
     /**
      * @return value of cancelable
-     **/
+     */
     fun isCancelable(): Boolean = cancelable
 
     /**
      * @param color ResourceId of text color
-     **/
+     */
     /* Sets text color */
     fun setTextColor(color: Int) {
         mMessageView?.setTextColor(ContextCompat.getColor(activity, color))
@@ -514,10 +513,16 @@ class ProgressDialog(private val activity: Activity) {
 
     /**
      * @param sizeInSp text size in sp
-     **/
+     */
     /* Sets text size */
     fun setTextSize(sizeInSp: Float) {
         mMessageView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeInSp)
     }
+
+    /**
+     * Return message display TextView, so that the user can customize it as per his wish
+     * @return Return message display TextView
+     */
+    fun getMessageTextView(): TextView? = mMessageView
 
 }
