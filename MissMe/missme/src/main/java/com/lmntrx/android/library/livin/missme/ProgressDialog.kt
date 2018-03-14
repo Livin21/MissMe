@@ -36,6 +36,7 @@ import android.text.style.StyleSpan
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -89,7 +90,8 @@ class ProgressDialog(private val activity: Activity) {
     private var mViewUpdateHandler: Handler? = null
 
     private val layout = RelativeLayout(activity)
-    private var mView: View? = null
+    private var mProgressDialogView: View? = null
+    private lateinit var mView: View
 
     private var cancelable: Boolean = true
 
@@ -97,47 +99,20 @@ class ProgressDialog(private val activity: Activity) {
 
         initFormats()
 
-        if (mMax > 0) {
-            setMax(mMax)
-        }
-        if (mProgressVal > 0) {
-            setProgress(mProgressVal)
-        }
-        if (mSecondaryProgressVal > 0) {
-            setSecondaryProgress(mSecondaryProgressVal)
-        }
-        if (mIncrementBy > 0) {
-            incrementProgressBy(mIncrementBy)
-        }
-        if (mIncrementSecondaryBy > 0) {
-            incrementSecondaryProgressBy(mIncrementSecondaryBy)
-        }
-        if (mProgressDrawable != null) {
-            setProgressDrawable(mProgressDrawable!!)
-        }
-        if (mIndeterminateDrawable != null) {
-            setIndeterminateDrawable(mIndeterminateDrawable!!)
-        }
-        if (mMessage != null) {
-            setMessage(mMessage!!.toString())
-        }
+        if (mMax > 0) setMax(mMax)
+        if (mProgressVal > 0) setProgress(mProgressVal)
+        if (mSecondaryProgressVal > 0) setSecondaryProgress(mSecondaryProgressVal)
+        if (mIncrementBy > 0) incrementProgressBy(mIncrementBy)
+        if (mIncrementSecondaryBy > 0) incrementSecondaryProgressBy(mIncrementSecondaryBy)
+        if (mProgressDrawable != null) setProgressDrawable(mProgressDrawable!!)
+        if (mIndeterminateDrawable != null) setIndeterminateDrawable(mIndeterminateDrawable!!)
+        if (mMessage != null) setMessage(mMessage!!.toString())
+
         setIndeterminate(mIndeterminate)
 
+        spinnerLayout()
+
         onProgressChanged()
-
-        /* If clicked anywhere on the screen except the progress dialog,
-         * the progress dialog must dismiss depending upon the value of cancelable
-         */
-        layout.setOnClickListener {
-            if (cancelable)
-                dismiss()
-        }
-
-        /* Left empty purposefully. To detach cardview and
-         * its contents from layout's click listener
-         */
-        mView?.setOnClickListener {}
-
 
         dismiss()
 
@@ -152,26 +127,26 @@ class ProgressDialog(private val activity: Activity) {
     private fun spinnerLayout() {
 
         val inflater = LayoutInflater.from(activity)
-        val view = inflater.inflate(R.layout.spinner_progress_dialog, layout)
+        val view = inflater.inflate(R.layout.spinner_progress_dialog, null, false)
 
         mProgress = view.findViewById<View>(R.id.progress) as ProgressBar
         mMessageView = view.findViewById<View>(R.id.message) as TextView
 
-        setView(view)
+        mView = view
 
     }
 
     private fun horizontalLayout() {
 
         val inflater = LayoutInflater.from(activity)
-        val view = inflater.inflate(R.layout.horizontal_progress_dialog, layout, false)
+        val view = inflater.inflate(R.layout.horizontal_progress_dialog, null, false)
 
         mProgress = view.findViewById<View>(R.id.progress) as ProgressBar
         mProgressNumber = view.findViewById<View>(R.id.progress_number) as TextView
         mProgressPercent = view.findViewById<View>(R.id.progress_percent) as TextView
         mMessageView = view.findViewById<View>(R.id.message) as TextView
 
-        setView(view)
+        mView = view
 
     }
 
@@ -180,6 +155,21 @@ class ProgressDialog(private val activity: Activity) {
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT)
         activity.addContentView(view, layoutParams)
         mView = view
+        mProgressDialogView = view.findViewById(R.id.progressDialogView)
+
+        /* If clicked anywhere on the screen except the progress dialog,
+         * the progress dialog must dismiss depending upon the value of cancelable
+         */
+        mView.setOnClickListener {
+            if (cancelable)
+                dismiss()
+        }
+
+        /* Left empty purposefully. To detach progressDialog and
+         * its contents from layout's click listener
+         */
+        mProgressDialogView?.setOnClickListener {}
+
     }
 
     /**
@@ -366,6 +356,10 @@ class ProgressDialog(private val activity: Activity) {
      */
     fun setProgressStyle(style: Int) {
         mProgressStyle = style
+        if (mProgressStyle == STYLE_HORIZONTAL)
+            horizontalLayout()
+        else
+            spinnerLayout()
     }
 
     /**
@@ -421,7 +415,6 @@ class ProgressDialog(private val activity: Activity) {
             /* Use a separate handler to update the text views as they
              * must be updated on the same thread that created them.
              */
-            setIndeterminate(true)
             mViewUpdateHandler = Handler{
                 /* Update the number and percent */
                 val progress = mProgress?.progress
@@ -443,14 +436,12 @@ class ProgressDialog(private val activity: Activity) {
                 }
                 true
             }
-
-
-            horizontalLayout()
-
-
+            setView(mView)
         }else{
-            spinnerLayout()
+            setView(mView)
         }
+
+        mHasStarted = true
 
         //layout.visibility = View.VISIBLE
     }
@@ -460,7 +451,8 @@ class ProgressDialog(private val activity: Activity) {
      **/
     /* Hide progress dialog */
     fun dismiss() {
-        mView?.visibility = View.GONE
+        mView.visibility = View.GONE
+        mHasStarted = false
     }
 
     /**

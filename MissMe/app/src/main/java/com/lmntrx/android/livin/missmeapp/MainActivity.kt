@@ -37,6 +37,8 @@ class MainActivity : AppCompatActivity() {
 
         progressDialog = ProgressDialog(this)
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
+        progressDialog.setMax(5)
+        progressDialog.setProgress(0)
         progressDialog.setMessage("Pretending to do some long task...")
         progressDialog.setCancelable(true)
 
@@ -50,6 +52,7 @@ class MainActivity : AppCompatActivity() {
                     while (++i <= 5) {
                         uiThread {
 
+                            progressDialog.setProgress(progressDialog.getProgress() + 1)
                             progressDialog.setMessage("Pretending to do some long task...${5 - i}")
 
                         }
