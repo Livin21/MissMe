@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity() {
     private var progressStyle = ProgressDialog.STYLE_SPINNER
 
     /* indeterminate mode selector */
-    private var indeterminate = true
+    private var indeterminate = false
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -177,7 +177,5 @@ class MainActivity : AppCompatActivity() {
     override fun onBackPressed() {
         progressDialog.onBackPressed { super.onBackPressed() }
     }
-
-
 
 }

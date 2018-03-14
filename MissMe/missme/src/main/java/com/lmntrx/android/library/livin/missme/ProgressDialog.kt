@@ -152,6 +152,7 @@ class ProgressDialog(private val activity: Activity) {
 
         setMax(mMax)
         setProgress(mProgressVal)
+        setIndeterminate(mIndeterminate)
 
         mView = view
 
@@ -344,9 +345,9 @@ class ProgressDialog(private val activity: Activity) {
     fun setIndeterminate(indeterminate: Boolean) {
         if (mProgress != null) {
             mProgress!!.isIndeterminate = indeterminate
-        } else {
-            mIndeterminate = indeterminate
         }
+        mIndeterminate = indeterminate
+
         /* Hide progress display TextViews */
         if (indeterminate){
             mProgressNumberFormat = null
