@@ -4,6 +4,8 @@
 
 `fun isCancelable(): `[`Boolean`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html)
 
+Says whether the dialog is cancelable or not.  Default is true.
+
 **Return**
 value of cancelable
 

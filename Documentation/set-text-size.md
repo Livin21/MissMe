@@ -4,6 +4,9 @@
 
 `fun setTextSize(sizeInSp: `[`Float`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-float/index.html)`): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)
 
+Set message TextView's size manually.
+User can also customize {@link #getMessageTextView() messageTextView directly.}
+
 ### Parameters
 
 `sizeInSp` - text size in sp

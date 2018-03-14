@@ -4,5 +4,5 @@
 
 `fun show(): `[`Unit`](https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-unit/index.html)
 
-Displays progress dialog
+Create and show progress dialog
 

@@ -413,8 +413,9 @@ class ProgressDialog(private val activity: Activity) {
     }
 
     /**
-     * @param message A string object to display on the progress dialog
+     * Displays an optional message
      * Functions same as the setMessage() in deprecated ProgressDialog class
+     * @param message A string object to display on the progress dialog
      **/
     /* Set message on the progress bar. */
     fun setMessage(message: String) {
@@ -422,7 +423,7 @@ class ProgressDialog(private val activity: Activity) {
     }
 
     /**
-     * Displays progress dialog
+     * Create and show progress dialog
      */
     /* Display progress dialog */
     fun show() {
@@ -459,7 +460,7 @@ class ProgressDialog(private val activity: Activity) {
     }
 
     /**
-     * Hides progress dialog
+     * Dismiss progress dialog
      **/
     /* Hide progress dialog */
     fun dismiss() {
@@ -469,6 +470,7 @@ class ProgressDialog(private val activity: Activity) {
     }
 
     /**
+     * Sets whether the dialog is cancelable or not.  Default is true.
      * @param cancelable A boolean which determines if the dialog can be dismissed by the user
      **/
     /* Toggles value of cancelable */
@@ -477,6 +479,9 @@ class ProgressDialog(private val activity: Activity) {
     }
 
     /**
+     * Set progress bar color.
+     * Color should be a constant from Color class, eg: Color.RED
+     * NB: Not a resId
      * @param color Constant from Color class, eg: Color.RED
      **/
     /* Sets progress bar's color */
@@ -488,9 +493,9 @@ class ProgressDialog(private val activity: Activity) {
     }
 
     /**
+     * Called when back button is pressed.
+     * Should be called in the overridden onBackPressed() of the activity
      * @param superOnBackPressed = {super.onBackPressed()} A block of code to be executed.
-     * Called when back button is pressed. Should be called in the overridden onBackPressed()
-     * of the activity
      **/
     fun onBackPressed(superOnBackPressed: () -> Unit) {
         if (mView.visibility == View.VISIBLE) {
@@ -501,11 +506,14 @@ class ProgressDialog(private val activity: Activity) {
     }
 
     /**
+     * Says whether the dialog is cancelable or not.  Default is true.
      * @return value of cancelable
      */
     fun isCancelable(): Boolean = cancelable
 
     /**
+     * Set message TextView's text color manually.
+     * User can also customize {@link #getMessageTextView() messageTextView directly.}
      * @param color ResourceId of text color
      */
     /* Sets text color */
@@ -514,6 +522,8 @@ class ProgressDialog(private val activity: Activity) {
     }
 
     /**
+     * Set message TextView's size manually.
+     * User can also customize {@link #getMessageTextView() messageTextView directly.}
      * @param sizeInSp text size in sp
      */
     /* Sets text size */
