@@ -26,6 +26,7 @@
 package com.lmntrx.android.library.livin.missme
 
 import android.app.Activity
+import android.app.ProgressDialog.STYLE_SPINNER
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.CardView
 import android.util.TypedValue
@@ -46,16 +47,54 @@ import android.widget.TextView
  **/
 class ProgressDialog(private val activity: Activity) {
 
+    companion object {
+        /**
+         * Creates a ProgressDialog with a circular, spinning progress
+         * bar. This is the default.
+         */
+        const val STYLE_SPINNER = 0
+
+        /**
+         * Creates a ProgressDialog with a horizontal progress bar.
+         */
+        const val STYLE_HORIZONTAL = 1
+    }
+
     private val layout = RelativeLayout(activity)
     private val textView = TextView(activity)
     private val progressBar = ProgressBar(activity, null, android.R.attr.progressBarStyleLarge)
     private val cardView = CardView(activity)
     private val innerLayout = LinearLayout(activity)
 
+    private var progressStyle = STYLE_SPINNER
+
     private var cancelable: Boolean = true
 
     init {
 
+        if (progressStyle == STYLE_SPINNER) {
+            spinnerLayout()
+        }
+
+        /* If clicked anywhere on the screen except the progress dialog,
+         * the progress dialog must dismiss depending upon the value of cancelable
+         */
+        layout.setOnClickListener {
+            if (cancelable)
+                dismiss()
+        }
+
+        /* Left empty purposefully. To detach cardview and
+         * its contents from layout's click listener
+         */
+        cardView.setOnClickListener {}
+
+
+        dismiss()
+
+    }
+
+    private fun spinnerLayout() {
         // CardView
         val cardViewParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 275)
         cardViewParams.addRule(RelativeLayout.CENTER_VERTICAL)
@@ -89,23 +128,6 @@ class ProgressDialog(private val activity: Activity) {
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT)
         activity.addContentView(layout, layoutParams)
         layout.addView(cardView, cardViewParams)
-
-        /* If clicked anywhere on the screen except the progress dialog,
-         * the progress dialog must dismiss depending upon the value of cancelable
-         */
-        layout.setOnClickListener {
-            if (cancelable)
-                dismiss()
-        }
-
-        /* Left empty purposefully. To detach cardview and
-         * its contents from layout's click listener
-         */
-        cardView.setOnClickListener {}
-
-
-        dismiss()
-
     }
 
     /* Convert dp to px */
@@ -118,13 +140,21 @@ class ProgressDialog(private val activity: Activity) {
         ).toInt()
     }
 
+    /**
+     * @param style can be STYLE_SPINNER or STYLE_HORIZONTAL
+     * Functions same as the setStyle() in deprecated ProgressDialog class
+     **/
+    /* Sets progressbar style */
+    fun setProgressStyle(style: Int) {
+        progressStyle = style
+    }
 
     /**
      * @param message A string object to display on the progress dialog
      * Functions same as the setMessage() in deprecated ProgressDialog class
      **/
     /* Set message on the progress bar. */
-    fun setMessage(message: String){
+    fun setMessage(message: String) {
         textView.text = message
     }
 
@@ -166,10 +196,10 @@ class ProgressDialog(private val activity: Activity) {
      * of the activity
      **/
     fun onBackPressed(superOnBackPressed: () -> Unit) {
-        if (layout.visibility == View.VISIBLE){
+        if (layout.visibility == View.VISIBLE) {
             if (cancelable)
                 dismiss()
-        }else
+        } else
             superOnBackPressed.invoke()
     }
 
