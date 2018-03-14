@@ -9,7 +9,7 @@ MissMe is an Android library written in Kotlin. Android SDK's ProgressDialog cla
 ## Gradle Setup ##
 Add the following dependency to module/build.gradle:
 ```gradle
-compile 'com.lmntrx.android.library.livin.missme:missme:0.1.4'
+compile 'com.lmntrx.android.library.livin.missme:missme:0.1.5'
 ```
 
 ## How to use it? ##
