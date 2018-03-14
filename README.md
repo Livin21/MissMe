@@ -34,7 +34,7 @@ progressDialog.dismiss();
 
 NB: You must override activity's onBackPressed()
 
-Java Implementation:
+Java8 Implementation:
 ```java
 @Override
 public void onBackPressed() {
@@ -53,6 +53,9 @@ override fun onBackPressed() {
     progressDialog.onBackPressed { super.onBackPressed() }
 }
 ```
+
+* Refer [Sample App](https://github.com/Livin21/MissMe/tree/master/MissMe) for the full implementation
+* Full documentation can be found [here](https://github.com/Livin21/MissMe/blob/master/Documentation/index.md)
 
 ## Copyright ###
 ```
