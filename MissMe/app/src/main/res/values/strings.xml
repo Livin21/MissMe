@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">MissMe</string>
+    <string name="show_progress_dialog">Show Progress Dialog</string>
+    <string name="cancelable_true">Cancelable: true</string>
+    <string name="change_progress_color">Change Progress Color</string>
 </resources>
