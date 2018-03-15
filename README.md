@@ -7,7 +7,7 @@ Android ProgressDialog brought back to life
 MissMe is an Android library written in Kotlin. Android SDK's ProgressDialog class was deprecated in Android Oreo. MissMe's ProgressDialog functions exactly the same and has the same interface.
 
 ## Screenshots ##
-![Horizontal Determinate](https://preview.ibb.co/nLQwHx/Horizontal_Determinate.jpg) ![Horizontal Indeterminate](https://preview.ibb.co/mcAVcx/Horizontal_Indeterminate.jpg) ![Spinner](https://preview.ibb.co/gYpvAH/Spinner.jpg) 
+![Horizontal Determinate](https://image.ibb.co/hegE4c/Horizontal_Determinate0.jpg) ![Horizontal Indeterminate](https://image.ibb.co/jJUCqH/Horizontal_Indeterminate0.jpg) ![Spinner](https://image.ibb.co/dz6mHx/Spinner0.jpg) 
 
 ## Gradle Setup ##
 Add the following dependency to module/build.gradle:
