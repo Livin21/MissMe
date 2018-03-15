@@ -60,6 +60,8 @@ override fun onBackPressed() {
 * Refer [Sample App](https://github.com/Livin21/MissMe/tree/master/MissMe) for the full implementation
 * Full documentation can be found [here](https://github.com/Livin21/MissMe/blob/master/Documentation/index.md)
 
+[![Buy Me A Coffee](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/livin)
+
 ## Copyright ###
 ```
  Copyright (c) 2018.  Livin
