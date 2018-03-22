@@ -199,12 +199,13 @@ class ProgressDialog(private val activity: Activity) {
      *
      * @see ProgressBar.setProgress
      */
-    fun setProgress(value: Int) {
+    fun setProgress(value: Int): ProgressDialog {
         if (mHasStarted) {
             mProgress?.progress = value
             onProgressChanged()
         }
         mProgressVal = value
+        return this
     }
 
     /**
@@ -215,13 +216,14 @@ class ProgressDialog(private val activity: Activity) {
      *
      * @see ProgressBar.setSecondaryProgress
      */
-    fun setSecondaryProgress(secondaryProgress: Int) {
+    fun setSecondaryProgress(secondaryProgress: Int): ProgressDialog {
         if (mProgress != null) {
             mProgress?.secondaryProgress = secondaryProgress
             onProgressChanged()
         } else {
             mSecondaryProgressVal = secondaryProgress
         }
+        return this
     }
 
     /**
@@ -260,12 +262,13 @@ class ProgressDialog(private val activity: Activity) {
     /**
      * Sets the maximum allowed progress value.
      */
-    fun setMax(max: Int) {
+    fun setMax(max: Int): ProgressDialog {
         if (mProgress != null) {
             mProgress!!.max = max
             onProgressChanged()
         }
         mMax = max
+        return this
     }
 
     /**
@@ -305,12 +308,13 @@ class ProgressDialog(private val activity: Activity) {
      *
      * @see ProgressBar.setProgressDrawable
      */
-    fun setProgressDrawable(d: Drawable) {
+    fun setProgressDrawable(d: Drawable): ProgressDialog {
         if (mProgress != null) {
             mProgress!!.progressDrawable = d
         } else {
             mProgressDrawable = d
         }
+        return this
     }
 
     /**
@@ -321,12 +325,13 @@ class ProgressDialog(private val activity: Activity) {
      * @see ProgressBar.setProgressDrawable
      * @see .setIndeterminate
      */
-    fun setIndeterminateDrawable(d: Drawable) {
+    fun setIndeterminateDrawable(d: Drawable): ProgressDialog {
         if (mProgress != null) {
             mProgress!!.indeterminateDrawable = d
         } else {
             mIndeterminateDrawable = d
         }
+        return this
     }
 
     /**
@@ -342,7 +347,7 @@ class ProgressDialog(private val activity: Activity) {
      *
      * @see .setProgressStyle
      */
-    fun setIndeterminate(indeterminate: Boolean) {
+    fun setIndeterminate(indeterminate: Boolean): ProgressDialog {
         if (mProgress != null) {
             mProgress!!.isIndeterminate = indeterminate
         }
@@ -354,6 +359,8 @@ class ProgressDialog(private val activity: Activity) {
             mProgressPercentFormat = null
         }else
             initFormats()
+
+        return this
     }
 
     /**
@@ -378,12 +385,13 @@ class ProgressDialog(private val activity: Activity) {
      * @param style the style of this ProgressDialog, either [.STYLE_SPINNER] or
      * [.STYLE_HORIZONTAL]
      */
-    fun setProgressStyle(style: Int) {
+    fun setProgressStyle(style: Int): ProgressDialog {
         mProgressStyle = style
         if (mProgressStyle == STYLE_HORIZONTAL)
             horizontalLayout()
         else
             spinnerLayout()
+        return this
     }
 
     /**
@@ -394,9 +402,10 @@ class ProgressDialog(private val activity: Activity) {
      * use "%1d" for the current number and "%2d" for the maximum.  If null,
      * nothing will be shown.
      */
-    fun setProgressNumberFormat(format: String) {
+    fun setProgressNumberFormat(format: String): ProgressDialog {
         mProgressNumberFormat = format
         onProgressChanged()
+        return this
     }
 
     /**
@@ -407,9 +416,10 @@ class ProgressDialog(private val activity: Activity) {
      * @param format An instance of a [NumberFormat] to generate the
      * percentage text.  If null, nothing will be shown.
      */
-    fun setProgressPercentFormat(format: NumberFormat) {
+    fun setProgressPercentFormat(format: NumberFormat): ProgressDialog {
         mProgressPercentFormat = format
         onProgressChanged()
+        return this
     }
 
     /**
@@ -418,15 +428,16 @@ class ProgressDialog(private val activity: Activity) {
      * @param message A string object to display on the progress dialog
      **/
     /* Set message on the progress bar. */
-    fun setMessage(message: String) {
+    fun setMessage(message: String): ProgressDialog {
         mMessageView?.text = message
+        return this
     }
 
     /**
      * Create and show progress dialog
      */
     /* Display progress dialog */
-    fun show() {
+    fun show(): ProgressDialog{
         mHasStarted = true
         if (mProgressStyle == STYLE_HORIZONTAL) {
             /* Use a separate handler to update the text views as they
@@ -457,6 +468,7 @@ class ProgressDialog(private val activity: Activity) {
         } else {
             mView.visibility = View.VISIBLE
         }
+        return this
     }
 
     /**
@@ -474,8 +486,9 @@ class ProgressDialog(private val activity: Activity) {
      * @param cancelable A boolean which determines if the dialog can be dismissed by the user
      **/
     /* Toggles value of cancelable */
-    fun setCancelable(cancelable: Boolean) {
+    fun setCancelable(cancelable: Boolean): ProgressDialog {
         this.cancelable = cancelable
+        return this
     }
 
     /**
@@ -485,11 +498,12 @@ class ProgressDialog(private val activity: Activity) {
      * @param color Constant from Color class, eg: Color.RED
      **/
     /* Sets progress bar's color */
-    fun setColor(color: Int) {
+    fun setColor(color: Int): ProgressDialog {
         if (mProgressStyle == STYLE_HORIZONTAL)
             mProgress?.progressDrawable?.mutate()?.setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN)
         else
             mProgress?.indeterminateDrawable?.setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN)
+        return this
     }
 
     /**
@@ -517,8 +531,9 @@ class ProgressDialog(private val activity: Activity) {
      * @param color ResourceId of text color
      */
     /* Sets text color */
-    fun setTextColor(color: Int) {
+    fun setTextColor(color: Int): ProgressDialog {
         mMessageView?.setTextColor(ContextCompat.getColor(activity, color))
+        return this
     }
 
     /**
@@ -527,8 +542,9 @@ class ProgressDialog(private val activity: Activity) {
      * @param sizeInSp text size in sp
      */
     /* Sets text size */
-    fun setTextSize(sizeInSp: Float) {
+    fun setTextSize(sizeInSp: Float): ProgressDialog {
         mMessageView?.setTextSize(TypedValue.COMPLEX_UNIT_SP, sizeInSp)
+        return this
     }
 
     /**
