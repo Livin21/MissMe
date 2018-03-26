@@ -26,9 +26,12 @@
 package com.lmntrx.android.library.livin.missme
 
 import android.app.Activity
+import android.app.ProgressDialog.STYLE_SPINNER
+import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Handler
+import android.support.v4.app.FragmentActivity
 import android.support.v4.content.ContextCompat
 import android.text.Spannable
 import android.text.SpannableString
@@ -53,7 +56,7 @@ import java.text.NumberFormat
  *
  * <p>The progress range is 0 to {@link #getMax() max}.</p>
  */
-class ProgressDialog(private val activity: Activity) {
+class ProgressDialog(private var mActivity: Activity? = null, mFragmentActivity: FragmentActivity? = null) {
 
     companion object {
         /**
@@ -99,6 +102,9 @@ class ProgressDialog(private val activity: Activity) {
 
         initFormats()
 
+        if (mActivity == null)
+            mActivity = mFragmentActivity?.parent
+
         if (mMax > 0) setMax(mMax)
         if (mProgressVal > 0) setProgress(mProgressVal)
         if (mSecondaryProgressVal > 0) setSecondaryProgress(mSecondaryProgressVal)
@@ -128,7 +134,7 @@ class ProgressDialog(private val activity: Activity) {
 
     private fun spinnerLayout() {
 
-        val inflater = LayoutInflater.from(activity)
+        val inflater = LayoutInflater.from(mActivity)
         val view = inflater.inflate(R.layout.spinner_progress_dialog, null, false)
 
         mProgress = view.findViewById<View>(R.id.progress) as ProgressBar
@@ -142,7 +148,7 @@ class ProgressDialog(private val activity: Activity) {
 
     private fun horizontalLayout() {
 
-        val inflater = LayoutInflater.from(activity)
+        val inflater = LayoutInflater.from(mActivity)
         val view = inflater.inflate(R.layout.horizontal_progress_dialog, null, false)
 
         mProgress = view.findViewById<View>(R.id.progress) as ProgressBar
@@ -163,7 +169,7 @@ class ProgressDialog(private val activity: Activity) {
     private fun setView(view: View) {
         val layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT)
-        activity.addContentView(view, layoutParams)
+        mActivity?.addContentView(view, layoutParams)
         mView = view
         mProgressDialogView = view.findViewById(R.id.progressDialogView)
 
@@ -532,7 +538,7 @@ class ProgressDialog(private val activity: Activity) {
      */
     /* Sets text color */
     fun setTextColor(color: Int): ProgressDialog {
-        mMessageView?.setTextColor(ContextCompat.getColor(activity, color))
+        mMessageView?.setTextColor(ContextCompat.getColor(mActivity!!, color))
         return this
     }
 
