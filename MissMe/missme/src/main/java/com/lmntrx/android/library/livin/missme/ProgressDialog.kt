@@ -25,17 +25,20 @@
 
 package com.lmntrx.android.library.livin.missme
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ProgressDialog.STYLE_SPINNER
 import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Handler
+import android.os.Message
 import android.support.v4.app.FragmentActivity
 import android.support.v4.content.ContextCompat
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.StyleSpan
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -87,10 +90,9 @@ class ProgressDialog(private var mActivity: Activity? = null, mFragmentActivity:
     private var mIncrementSecondaryBy: Int = 0
     private var mProgressDrawable: Drawable? = null
     private var mIndeterminateDrawable: Drawable? = null
-    private var mMessage: CharSequence? = null
+    private var mMessage: String = ""
     private var mIndeterminate: Boolean = false
 
-    private var mHasStarted: Boolean = false
     private var mViewUpdateHandler: Handler? = null
 
     private var mProgressDialogView: View? = null
@@ -112,7 +114,7 @@ class ProgressDialog(private var mActivity: Activity? = null, mFragmentActivity:
         if (mIncrementSecondaryBy > 0) incrementSecondaryProgressBy(mIncrementSecondaryBy)
         if (mProgressDrawable != null) setProgressDrawable(mProgressDrawable!!)
         if (mIndeterminateDrawable != null) setIndeterminateDrawable(mIndeterminateDrawable!!)
-        if (mMessage != null) setMessage(mMessage!!.toString())
+        setMessage(mMessage)
 
         setIndeterminate(mIndeterminate)
 
@@ -139,6 +141,10 @@ class ProgressDialog(private var mActivity: Activity? = null, mFragmentActivity:
 
         mProgress = view.findViewById<View>(R.id.progress) as ProgressBar
         mMessageView = view.findViewById<View>(R.id.message) as TextView
+        setMax(mMax)
+        setProgress(mProgressVal)
+        setIndeterminate(mIndeterminate)
+        setMessage(mMessage)
 
         mView = view
 
@@ -151,6 +157,36 @@ class ProgressDialog(private var mActivity: Activity? = null, mFragmentActivity:
         val inflater = LayoutInflater.from(mActivity)
         val view = inflater.inflate(R.layout.horizontal_progress_dialog, null, false)
 
+
+        /* Use a separate handler to update the text views as they
+         * must be updated on the same thread that created them.
+         */
+        mViewUpdateHandler = @SuppressLint("HandlerLeak")
+        object : Handler() {
+            override fun handleMessage(msg: Message) {
+                super.handleMessage(msg)
+
+                /* Update the number and percent */
+                val progress = mProgress?.progress
+                val max = mProgress?.max
+                if (mProgressNumberFormat != null) {
+                    val format = mProgressNumberFormat
+                    mProgressNumber?.text = format?.let { String.format(it, progress, max) }
+                } else {
+                    mProgressNumber?.text = ""
+                }
+                if (mProgressPercentFormat != null) {
+                    val percent = (progress?.toDouble() ?: 0.0) / (max?.toDouble() ?: 100.0)
+                    val tmp = SpannableString(mProgressPercentFormat?.format(percent))
+                    tmp.setSpan(StyleSpan(android.graphics.Typeface.BOLD),
+                            0, tmp.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    mProgressPercent?.text = tmp
+                } else {
+                    mProgressPercent?.text = ""
+                }
+            }
+        }
+
         mProgress = view.findViewById<View>(R.id.progress) as ProgressBar
         mProgressNumber = view.findViewById<View>(R.id.progress_number) as TextView
         mProgressPercent = view.findViewById<View>(R.id.progress_percent) as TextView
@@ -159,6 +195,7 @@ class ProgressDialog(private var mActivity: Activity? = null, mFragmentActivity:
         setMax(mMax)
         setProgress(mProgressVal)
         setIndeterminate(mIndeterminate)
+        setMessage(mMessage)
 
         mView = view
 
@@ -206,10 +243,8 @@ class ProgressDialog(private var mActivity: Activity? = null, mFragmentActivity:
      * @see ProgressBar.setProgress
      */
     fun setProgress(value: Int): ProgressDialog {
-        if (mHasStarted) {
-            mProgress?.progress = value
-            onProgressChanged()
-        }
+        mProgress?.progress = value
+        onProgressChanged()
         mProgressVal = value
         return this
     }
@@ -436,6 +471,7 @@ class ProgressDialog(private var mActivity: Activity? = null, mFragmentActivity:
     /* Set message on the progress bar. */
     fun setMessage(message: String): ProgressDialog {
         mMessageView?.text = message
+        mMessage = message
         return this
     }
 
@@ -444,32 +480,7 @@ class ProgressDialog(private var mActivity: Activity? = null, mFragmentActivity:
      */
     /* Display progress dialog */
     fun show(): ProgressDialog{
-        mHasStarted = true
         if (mProgressStyle == STYLE_HORIZONTAL) {
-            /* Use a separate handler to update the text views as they
-             * must be updated on the same thread that created them.
-             */
-            mViewUpdateHandler = Handler {
-                /* Update the number and percent */
-                val progress = mProgress?.progress
-                val max = mProgress?.max
-                if (mProgressNumberFormat != null) {
-                    val format = mProgressNumberFormat
-                    mProgressNumber?.text = String.format(format!!, progress, max)
-                } else {
-                    mProgressNumber?.text = ""
-                }
-                if (mProgressPercentFormat != null) {
-                    val percent = progress!!.toDouble() / max!!.toDouble()
-                    val tmp = SpannableString(mProgressPercentFormat?.format(percent))
-                    tmp.setSpan(StyleSpan(Typeface.BOLD),
-                            0, tmp.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                    mProgressPercent?.text = tmp
-                } else {
-                    mProgressPercent?.text = ""
-                }
-                true
-            }
             mView.visibility = View.VISIBLE
         } else {
             mView.visibility = View.VISIBLE
@@ -484,7 +495,6 @@ class ProgressDialog(private var mActivity: Activity? = null, mFragmentActivity:
     fun dismiss() {
         mView.visibility = View.GONE
         setProgress(0)
-        mHasStarted = false
     }
 
     /**

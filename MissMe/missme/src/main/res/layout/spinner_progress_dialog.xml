@@ -36,6 +36,7 @@
         android:id="@+id/progressDialogView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="80dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:cardElevation="10dp"
@@ -50,7 +51,7 @@
             android:paddingBottom="10dip"
             android:paddingEnd="8dip"
             android:paddingStart="8dip"
-            android:paddingTop="10dip">
+            android:paddingTop="17dip">
 
             <ProgressBar
                 android:id="@+id/progress"

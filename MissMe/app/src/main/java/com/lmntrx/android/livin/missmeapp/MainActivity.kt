@@ -72,14 +72,21 @@ class MainActivity : AppCompatActivity() {
         // Initialize progressDialog
         progressDialog = ProgressDialog(this)
 
+        /*progressDialog.apply {
+            setMessage("Loading")
+            setMax(5)
+            setProgress(4)
+            setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
+        }.show()*/
+
+        // Set message
+        progressDialog.setMessage("Pretending to do some long task...")
+
         // Set maximum progress
         progressDialog.setMax(5)
 
         // Set Current Progress
         progressDialog.setProgress(0)
-
-        // Set message
-        progressDialog.setMessage("Pretending to do some long task...")
 
         // Set cancelable
         progressDialog.setCancelable(true)
@@ -156,8 +163,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
-        /* toggleIndeterminateButton Click Listener */
+        /* toggleIndeterminateButton Click Listener*/
         toggleIndeterminateButton.setOnClickListener {
 
             // Toggle indeterminate
