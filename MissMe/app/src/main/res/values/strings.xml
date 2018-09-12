@@ -5,4 +5,5 @@
     <string name="change_progress_color">Change Progress Color</string>
     <string name="toggle_progress_style">Toggle ProgressStyle: STYLE_SPINNER</string>
     <string name="toggle_indeterminate_false">Toggle Indeterminate: false</string>
+    <string name="set_custom_view">Set Custom View</string>
 </resources>
