@@ -155,10 +155,7 @@ class ProgressDialog(private var mActivity: Activity? = null, mFragmentActivity:
         setIndeterminate(mIndeterminate)
         setMessage(mMessage)
 
-        mView = view
-
         setView(view)
-
     }
 
     private fun setCustomLayout(customProgressStyle: ProgressStyle.CustomStyle) {
@@ -171,7 +168,6 @@ class ProgressDialog(private var mActivity: Activity? = null, mFragmentActivity:
             if (customProgressStyle.progressView != INVALID_ID) {
                 mProgress = it.findViewById(customProgressStyle.progressView)
             }
-            mView = it
             setView(it)
         }
     }
@@ -221,14 +217,14 @@ class ProgressDialog(private var mActivity: Activity? = null, mFragmentActivity:
         setIndeterminate(mIndeterminate)
         setMessage(mMessage)
 
-        mView = view
-
         setView(view)
-
     }
 
     private fun setView(view: View) {
-        val layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
+        val layoutParams = RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.MATCH_PARENT
+        )
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT)
         mActivity?.addContentView(view, layoutParams)
         mView = view
@@ -248,7 +244,6 @@ class ProgressDialog(private var mActivity: Activity? = null, mFragmentActivity:
         mProgressDialogView?.setOnClickListener {}
 
         mView.visibility = View.GONE
-
     }
 
     private fun onProgressChanged() {
@@ -504,12 +499,8 @@ class ProgressDialog(private var mActivity: Activity? = null, mFragmentActivity:
      * Create and show progress dialog
      */
     /* Display progress dialog */
-    fun show(): ProgressDialog {
-        if (mProgressStyle == ProgressStyle.HorizontalStyle) {
-            mView.visibility = View.VISIBLE
-        } else {
-            mView.visibility = View.VISIBLE
-        }
+    fun show(animate: Boolean = true): ProgressDialog {
+        mView.setVisible(true, animate)
         return this
     }
 
@@ -517,9 +508,10 @@ class ProgressDialog(private var mActivity: Activity? = null, mFragmentActivity:
      * Dismiss progress dialog
      **/
     /* Hide progress dialog */
-    fun dismiss() {
-        mView.visibility = View.GONE
-        setProgress(0)
+    fun dismiss(animate: Boolean = true) {
+        mView.setVisible(false, animate) {
+            setProgress(0)
+        }
     }
 
     /**
