@@ -27,18 +27,16 @@ package com.lmntrx.android.library.livin.missme
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.ProgressDialog.STYLE_SPINNER
 import android.content.Context
-import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Message
+import android.support.annotation.IdRes
 import android.support.v4.app.FragmentActivity
 import android.support.v4.content.ContextCompat
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.StyleSpan
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -62,22 +60,33 @@ import java.text.NumberFormat
 class ProgressDialog(private var mActivity: Activity? = null, mFragmentActivity: FragmentActivity? = null) {
 
     companion object {
+        const val INVALID_ID = -1
+    }
+
+    sealed class ProgressStyle {
         /**
          * Creates a ProgressDialog with a circular, spinning progress
          * bar. This is the default.
          */
-        const val STYLE_SPINNER = 0
+        object SpinnerStyle : ProgressStyle()
 
         /**
          * Creates a ProgressDialog with a horizontal progress bar.
          */
-        const val STYLE_HORIZONTAL = 1
+        object HorizontalStyle : ProgressStyle()
+
+        /**
+         * User defined style!
+         */
+        class CustomStyle(@IdRes val progressView: Int = INVALID_ID,
+                          @IdRes val messageView: Int = INVALID_ID,
+                          val viewMaker: (Context) -> View) : ProgressStyle()
     }
 
     private var mProgress: ProgressBar? = null
     private var mMessageView: TextView? = null
 
-    private var mProgressStyle = STYLE_SPINNER
+    private var mProgressStyle: ProgressStyle = ProgressStyle.SpinnerStyle
     private var mProgressNumber: TextView? = null
     private var mProgressNumberFormat: String? = null
     private var mProgressPercent: TextView? = null
@@ -146,10 +155,21 @@ class ProgressDialog(private var mActivity: Activity? = null, mFragmentActivity:
         setIndeterminate(mIndeterminate)
         setMessage(mMessage)
 
-        mView = view
-
         setView(view)
+    }
 
+    private fun setCustomLayout(customProgressStyle: ProgressStyle.CustomStyle) {
+        checkNotNull(mActivity) { "Activity must not be null at this point" }
+
+        customProgressStyle.viewMaker.invoke(mActivity!!).let {
+            if (customProgressStyle.messageView != INVALID_ID) {
+                mMessageView = it.findViewById(customProgressStyle.messageView)
+            }
+            if (customProgressStyle.progressView != INVALID_ID) {
+                mProgress = it.findViewById(customProgressStyle.progressView)
+            }
+            setView(it)
+        }
     }
 
     private fun horizontalLayout() {
@@ -197,14 +217,14 @@ class ProgressDialog(private var mActivity: Activity? = null, mFragmentActivity:
         setIndeterminate(mIndeterminate)
         setMessage(mMessage)
 
-        mView = view
-
         setView(view)
-
     }
 
     private fun setView(view: View) {
-        val layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
+        val layoutParams = RelativeLayout.LayoutParams(
+                RelativeLayout.LayoutParams.MATCH_PARENT,
+                RelativeLayout.LayoutParams.MATCH_PARENT
+        )
         layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT)
         mActivity?.addContentView(view, layoutParams)
         mView = view
@@ -224,11 +244,10 @@ class ProgressDialog(private var mActivity: Activity? = null, mFragmentActivity:
         mProgressDialogView?.setOnClickListener {}
 
         mView.visibility = View.GONE
-
     }
 
     private fun onProgressChanged() {
-        if (mProgressStyle == STYLE_HORIZONTAL) {
+        if (mProgressStyle == ProgressStyle.HorizontalStyle) {
             if (mViewUpdateHandler != null && !mViewUpdateHandler!!.hasMessages(0)) {
                 mViewUpdateHandler!!.sendEmptyMessage(0)
             }
@@ -395,10 +414,10 @@ class ProgressDialog(private var mActivity: Activity? = null, mFragmentActivity:
         mIndeterminate = indeterminate
 
         /* Hide progress display TextViews */
-        if (indeterminate){
+        if (indeterminate) {
             mProgressNumberFormat = null
             mProgressPercentFormat = null
-        }else
+        } else
             initFormats()
 
         return this
@@ -416,22 +435,23 @@ class ProgressDialog(private var mActivity: Activity? = null, mFragmentActivity:
     }
 
     /**
-     * Sets the style of this ProgressDialog, either [.STYLE_SPINNER] or
-     * [.STYLE_HORIZONTAL]. The default is [.STYLE_SPINNER].
+     * Sets the style of this ProgressDialog, either [ProgressStyle.HorizontalStyle] or
+     * [ProgressStyle.SpinnerStyle] or [ProgressStyle.CustomStyle].
+     * The default is [ProgressStyle.SpinnerStyle].
      *
      *
-     * **Note:** A ProgressDialog with style [.STYLE_SPINNER]
+     * **Note:** A ProgressDialog with style [ProgressStyle.SpinnerStyle]
      * is always indeterminate and will ignore the [ indeterminate][.setIndeterminate] setting.
      *
-     * @param style the style of this ProgressDialog, either [.STYLE_SPINNER] or
-     * [.STYLE_HORIZONTAL]
+     * @param style the style of this ProgressDialog
      */
-    fun setProgressStyle(style: Int): ProgressDialog {
+    fun setProgressStyle(style: ProgressStyle): ProgressDialog {
         mProgressStyle = style
-        if (mProgressStyle == STYLE_HORIZONTAL)
-            horizontalLayout()
-        else
-            spinnerLayout()
+        when (style) {
+            ProgressStyle.HorizontalStyle -> horizontalLayout()
+            ProgressStyle.SpinnerStyle -> spinnerLayout()
+            is ProgressStyle.CustomStyle -> setCustomLayout(style)
+        }
         return this
     }
 
@@ -479,12 +499,8 @@ class ProgressDialog(private var mActivity: Activity? = null, mFragmentActivity:
      * Create and show progress dialog
      */
     /* Display progress dialog */
-    fun show(): ProgressDialog{
-        if (mProgressStyle == STYLE_HORIZONTAL) {
-            mView.visibility = View.VISIBLE
-        } else {
-            mView.visibility = View.VISIBLE
-        }
+    fun show(animate: Boolean = true): ProgressDialog {
+        mView.setVisible(true, animate)
         return this
     }
 
@@ -492,9 +508,10 @@ class ProgressDialog(private var mActivity: Activity? = null, mFragmentActivity:
      * Dismiss progress dialog
      **/
     /* Hide progress dialog */
-    fun dismiss() {
-        mView.visibility = View.GONE
-        setProgress(0)
+    fun dismiss(animate: Boolean = true) {
+        mView.setVisible(false, animate) {
+            setProgress(0)
+        }
     }
 
     /**
@@ -515,7 +532,7 @@ class ProgressDialog(private var mActivity: Activity? = null, mFragmentActivity:
      **/
     /* Sets progress bar's color */
     fun setColor(color: Int): ProgressDialog {
-        if (mProgressStyle == STYLE_HORIZONTAL)
+        if (mProgressStyle == ProgressStyle.HorizontalStyle)
             mProgress?.progressDrawable?.mutate()?.setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN)
         else
             mProgress?.indeterminateDrawable?.setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN)

@@ -26,12 +26,12 @@
     */ -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    tools:context="com.lmntrx.android.livin.missmeapp.MainActivity">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center"
+              android:orientation="vertical"
+              tools:context="com.lmntrx.android.livin.missmeapp.MainActivity">
 
     <Button
         android:id="@+id/toggleCancelableButton"
@@ -52,7 +52,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/change_progress_color" />
+        android:text="@string/change_progress_color"/>
 
 
     <Button
@@ -63,7 +63,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/toggle_progress_style" />
+        android:text="@string/toggle_progress_style"/>
 
 
     <Button
@@ -74,8 +74,17 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/toggle_indeterminate_false" />
+        android:text="@string/toggle_indeterminate_false"/>
 
+    <Button
+        android:id="@+id/setCustomViewButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/set_custom_view"/>
 
     <Button
         android:id="@+id/showProgressDialogButton"
@@ -84,6 +93,6 @@
         android:layout_marginBottom="4dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:text="@string/show_progress_dialog" />
+        android:text="@string/show_progress_dialog"/>
 
 </LinearLayout>

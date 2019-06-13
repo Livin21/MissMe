@@ -29,6 +29,7 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.LayoutInflater
 import com.lmntrx.android.library.livin.missme.ProgressDialog
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.doAsync
@@ -59,7 +60,7 @@ class MainActivity : AppCompatActivity() {
     private var currentColor = 0
 
     /* progress style selector */
-    private var progressStyle = ProgressDialog.STYLE_SPINNER
+    private var progressStyle: ProgressDialog.ProgressStyle = ProgressDialog.ProgressStyle.SpinnerStyle
 
     /* indeterminate mode selector */
     private var indeterminate = false
@@ -142,25 +143,31 @@ class MainActivity : AppCompatActivity() {
         /* toggleProgressStyleButton Click Listener */
         toggleProgressStyleButton.setOnClickListener {
 
-            if (progressStyle == ProgressDialog.STYLE_SPINNER){
+            if (progressStyle == ProgressDialog.ProgressStyle.SpinnerStyle) {
 
                 // Set Progress Style
-                progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
+                progressDialog.setProgressStyle(ProgressDialog.ProgressStyle.HorizontalStyle)
 
                 toggleProgressStyleButton.text = "Toggle ProgressStyle: STYLE_HORIZONTAL"
 
-                progressStyle = ProgressDialog.STYLE_HORIZONTAL
+                progressStyle = ProgressDialog.ProgressStyle.HorizontalStyle
 
-            }else{
+            } else {
 
                 // Set Progress Style
-                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER)
+                progressDialog.setProgressStyle(ProgressDialog.ProgressStyle.SpinnerStyle)
 
                 toggleProgressStyleButton.text = "Toggle ProgressStyle: STYLE_SPINNER"
 
-                progressStyle = ProgressDialog.STYLE_SPINNER
+                progressStyle = ProgressDialog.ProgressStyle.SpinnerStyle
 
             }
+        }
+
+        setCustomViewButton.setOnClickListener { it ->
+            progressDialog.setProgressStyle(ProgressDialog.ProgressStyle.CustomStyle {
+                LayoutInflater.from(it).inflate(R.layout.custom_view, null, false)
+            })
         }
 
         /* toggleIndeterminateButton Click Listener*/
